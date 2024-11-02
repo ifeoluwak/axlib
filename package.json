@@ -54,7 +54,7 @@
   "dependencies": {
     "axios": "^1.7.7",
     "execa": "^9.5.1",
-    "maketypes": "github:ifeoluwak/MakeTypes",
+    "maketypes": "https://github.com/ifeoluwak/MakeTypes.git",
     "ts-morph": "^24.0.0"
   }
 }
