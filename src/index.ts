@@ -1,1 +1,1 @@
-export { typedApi, typedApiWrapper } from "./typed";
+export { typedApi, typedApiWrapper } from './typed';
