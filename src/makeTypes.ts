@@ -1,5 +1,4 @@
 import { NopWriter, StreamWriter, Emitter } from 'maketypes';
-import * as fs from 'node:fs';
 import { getConfig } from './getConfig';
 
 export const makeType = async (
@@ -15,6 +14,7 @@ export const makeType = async (
   const path = config.typePath;
 
   if (newTypeFile) {
+    const fs = require('fs');
     const filePath = `./${path}/${newTypeFile}`;
     interfaceWriter = new StreamWriter(fs.createWriteStream(filePath));
   } else {

@@ -56,5 +56,6 @@
     "execa": "^9.5.1",
     "maketypes": "https://github.com/ifeoluwak/MakeTypes.git",
     "ts-morph": "^24.0.0"
-  }
+  },
+  "type": "module"
 }
