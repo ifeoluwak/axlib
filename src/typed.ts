@@ -137,6 +137,7 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
       }
       return bodys;
     } catch (error) {
+      console.log('\n\n\nError\n\n\n\n', error);
       return error;
     }
   };
