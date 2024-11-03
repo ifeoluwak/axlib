@@ -124,11 +124,10 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
     console.log('I am here', typeName, args);
 
     try {
-      initialise(typeName);
       const bodys = await fn(args);
       if (bodys?.data) {
         setTimeout(() => {
-          fetch(`http://localhost:3000/`, {
+          fetch(`http://localhost:3000/?${typeName}=${typeName}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

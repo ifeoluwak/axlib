@@ -110,7 +110,7 @@ const handleData = (data: any, typeName: string) => {
 }
 
 // @ts-ignore
-export const initialise = async (typeName: string) => {
+export const initialise = async () => {
     const express = require('express')
     const bodyParser = require('body-parser')
     const app = express()
@@ -120,10 +120,10 @@ export const initialise = async (typeName: string) => {
 
     app.post('/', (req: any, res: any) => {
         // get request data
-        console.log('Inside express', req.body, typeName);
+        console.log('Inside express', req.body, req.params, req);
     //   console.log('I am here', { req, res });
         // ExerciseApi.getExercises();
-        handleData(req.body, typeName);
+        // handleData(req.body, typeName);
         res.send('Hello World!')
     })
 
