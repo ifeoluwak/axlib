@@ -1,8 +1,7 @@
 // import { Project, SyntaxKind } from 'ts-morph';
 // import { makeType } from './makeTypes';
 // import { getConfig } from './getConfig';
-import { initialise } from './initializer';
-// import path from 'node:path';
+
 
 
 type FunctionType<T> = (...args: any[]) => Promise<{ data: T }>;

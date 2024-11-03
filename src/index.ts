@@ -1,8 +1,5 @@
-// import { ExerciseApi } from './api/exercise';
+#!/usr/bin/node
 
-import { initialise } from './initializer';
+import { initialise } from "./initializer";
 
-export { typedApi, typedApiWrapper } from './typed';
-
-initialise().catch(console.error);
-// ExerciseApi.getExercises();
+initialise();
