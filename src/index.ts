@@ -4,5 +4,5 @@ import { initialise } from './initializer';
 
 export { typedApi, typedApiWrapper } from './typed';
 
-initialise()
+initialise().catch(console.error);
 // ExerciseApi.getExercises();
