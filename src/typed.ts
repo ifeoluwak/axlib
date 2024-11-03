@@ -120,13 +120,13 @@ export const typedApiWrapper = <T>(obj: ObjectType<T>) => {
 export const typedApi = <T>(fn: FunctionType<T>) => {
   return async (args: any) => {
     const typeName = fn.name;
-    console.log('I am here', typeName, args);
+    console.log('I am here \n\n\n\n\n\n\n\n\n\n\n', typeName, args);
 
     try {
       const bodys = await fn(args);
       if (bodys?.data) {
         setTimeout(() => {
-          fetch(`http://localhost:3000/?${typeName}=${typeName}`, {
+          fetch(`http://localhost:3000/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
