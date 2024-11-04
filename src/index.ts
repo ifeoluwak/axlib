@@ -1,5 +1,1 @@
-#!/usr/bin/node
-
-import { initialise } from "./initializer";
-
-initialise();
+export { typedApi, typedApiWrapper } from "./typed";
