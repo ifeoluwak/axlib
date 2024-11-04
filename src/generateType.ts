@@ -1,4 +1,4 @@
-const { NopWriter, StreamWriter, Emitter } = require('maketypes');
+import { NopWriter, StreamWriter, Emitter } from 'maketypes';
 import * as fs from 'fs';
 import { getConfig } from './getConfig.js';
 

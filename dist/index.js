@@ -1,7 +1,6 @@
-import { __awaiter, __generator } from "tslib";
-export var typedApiWrapper = function (obj) {
-    var newObj = {};
-    for (var key in obj) {
+export const typedApiWrapper = (obj) => {
+    let newObj = {};
+    for (const key in obj) {
         // @ts-ignore
         newObj[key] = typedApi(obj[key]);
     }
@@ -93,40 +92,30 @@ export var typedApiWrapper = function (obj) {
 //     }
 //   };
 // };
-export var typedApi = function (fn) {
+export const typedApi = (fn) => {
     // @ts-ignore
-    return function (args) { return __awaiter(void 0, void 0, void 0, function () {
-        var typeName, bodys_1, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    typeName = fn.name;
-                    console.log('I am here \n\n\n\n\n\n\n\n\n\n\n', typeName, args);
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, fn(args)];
-                case 2:
-                    bodys_1 = _a.sent();
-                    if (bodys_1 === null || bodys_1 === void 0 ? void 0 : bodys_1.data) {
-                        setTimeout(function () {
-                            fetch("http://localhost:4000/", {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify(bodys_1.data),
-                            });
-                        }, 1000);
-                    }
-                    return [2 /*return*/, bodys_1];
-                case 3:
-                    error_1 = _a.sent();
-                    console.log('\n\n\nError\n\n\n\n', error_1);
-                    return [2 /*return*/, error_1];
-                case 4: return [2 /*return*/];
+    return async (args) => {
+        const typeName = fn.name;
+        console.log('I am here \n\n\n\n\n\n\n\n\n\n\n', typeName, args);
+        try {
+            const bodys = await fn(args);
+            if (bodys?.data) {
+                setTimeout(() => {
+                    fetch(`http://localhost:4000/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(bodys.data),
+                    });
+                }, 1000);
             }
-        });
-    }); };
+            return bodys;
+        }
+        catch (error) {
+            console.log('\n\n\nError\n\n\n\n', error);
+            return error;
+        }
+    };
 };
 //# sourceMappingURL=index.js.map
