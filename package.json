@@ -1,7 +1,6 @@
 {
   "version": "0.1.0",
   "license": "MIT",
-  "main": "src/index.ts",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
@@ -32,17 +31,7 @@
   },
   "name": "axlib",
   "author": "ifeoluwa",
-  "module": "src/index.ts",
-  "size-limit": [
-    {
-      "path": "dist/axlib.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/axlib.esm.js",
-      "limit": "10 KB"
-    }
-  ],
+  "module": "dist/axlib.esm.js",
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.1.6",
     "husky": "^9.1.6",
