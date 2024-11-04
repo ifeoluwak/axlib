@@ -102,7 +102,7 @@ const initialise = async () => {
     const bodyParser = require('body-parser');
     const cors = require('cors');
     const app = express();
-    const port = 80;
+    const port = 4000;
     app.use(cors({
         origin: 'http://localhost:3000'
     }));
