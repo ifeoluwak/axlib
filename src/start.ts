@@ -7,7 +7,7 @@ const argv = yargs.usage('Usage: $0 [options] inputFile rootName')
   .alias('i', 'interface-file')
   .string('i')
   .describe('i', 'Specify output file for interfaces')
-  .args
+  .argv
 
 console.log({argv});
 
