@@ -98,24 +98,26 @@ const handleData = (data, typeName) => {
 // @ts-ignore
 const initialise = async () => {
     console.log('Initialising... express app');
-    if (process.env.NODE_ENV === 'development') {
-        const express = require('express');
-        const bodyParser = require('body-parser');
-        const app = express();
-        const port = 3000;
-        app.use(bodyParser.json());
-        app.post('/', (req, res) => {
-            // get request data
-            console.log('Inside express', req.body, req.params, req);
-            //   console.log('I am here', { req, res });
-            // ExerciseApi.getExercises();
-            // handleData(req.body, typeName);
-            res.send('Hello World!');
-        });
-        app.listen(port, () => {
-            console.log(`Example app listening on port ${port}`);
-        });
-    }
+    const express = require('express');
+    const bodyParser = require('body-parser');
+    const cors = require('cors');
+    const app = express();
+    const port = 3000;
+    app.use(bodyParser.json());
+    app.use(cors({
+        origin: 'http://localhost:3000'
+    }));
+    app.post('/', (req, res) => {
+        // get request data
+        console.log('Inside express', req.body, req.params, req);
+        //   console.log('I am here', { req, res });
+        // ExerciseApi.getExercises();
+        // handleData(req.body, typeName);
+        res.send('Hello World!');
+    });
+    app.listen(port, () => {
+        console.log(`Example app listening on port ${port}`);
+    });
 };
 exports.initialise = initialise;
 //# sourceMappingURL=initializer.js.map

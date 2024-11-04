@@ -126,7 +126,9 @@ export const initialise = async () => {
       const port = 3000
   
       app.use(bodyParser.json()) 
-      app.use(cors()); 
+      app.use(cors({
+        origin: 'http://localhost:3000'
+      })); 
   
       app.post('/', (req: any, res: any) => {
           // get request data

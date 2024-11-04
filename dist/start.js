@@ -2,10 +2,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const initializer_js_1 = require("./initializer.js");
-const yargs_1 = require("yargs");
-var argv = (0, yargs_1.yargs)(process.argv.slice(2)).parse();
+var argv = require('yargs/yargs')(process.argv.slice(2)).parse();
 console.log({ argv });
 if (argv.init) {
+    console.log('got here... express app');
     (0, initializer_js_1.initialise)();
 }
 //# sourceMappingURL=start.js.map
