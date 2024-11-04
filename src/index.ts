@@ -1,17 +1,9 @@
-// import { Project, SyntaxKind } from 'ts-morph';
-// import { makeType } from './makeTypes';
-// import { getConfig } from './getConfig';
-
-
 type FunctionType<T> = (...args: any[]) => Promise<{ data: T }>;
 
 type ObjectType<T> = {
   [key in keyof T]: FunctionType<T[key]>;
 };
 
-// const project = new Project({
-//   tsConfigFilePath: 'tsconfig.json',
-// });
 
 export const typedApiWrapper = <T>(obj: ObjectType<T>) => {
   let newObj: ObjectType<T> = {} as ObjectType<T>;

@@ -1,11 +1,4 @@
-// import { Project, SyntaxKind } from 'ts-morph';
-// import { makeType } from './makeTypes';
-// import { getConfig } from './getConfig';
 import { __awaiter, __generator } from "tslib";
-import { initialise } from "./initializer";
-// const project = new Project({
-//   tsConfigFilePath: 'tsconfig.json',
-// });
 export var typedApiWrapper = function (obj) {
     var newObj = {};
     for (var key in obj) {
@@ -112,7 +105,6 @@ export var typedApi = function (fn) {
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, , 4]);
-                    initialise();
                     return [4 /*yield*/, fn(args)];
                 case 2:
                     bodys_1 = _a.sent();

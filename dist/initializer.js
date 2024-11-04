@@ -95,24 +95,27 @@ var handleData = function (data, typeName) {
 };
 // @ts-ignore
 export var initialise = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var express, bodyParser, app, port;
+    var express, bodyParser, app, port_1;
     return __generator(this, function (_a) {
-        express = require('express');
-        bodyParser = require('body-parser');
-        app = express();
-        port = 3000;
-        app.use(bodyParser.json());
-        app.post('/', function (req, res) {
-            // get request data
-            console.log('Inside express', req.body, req.params, req);
-            //   console.log('I am here', { req, res });
-            // ExerciseApi.getExercises();
-            // handleData(req.body, typeName);
-            res.send('Hello World!');
-        });
-        app.listen(port, function () {
-            console.log("Example app listening on port ".concat(port));
-        });
+        console.log('Initialising... express app');
+        if (process.env.NODE_ENV === 'development') {
+            express = require('express');
+            bodyParser = require('body-parser');
+            app = express();
+            port_1 = 3000;
+            app.use(bodyParser.json());
+            app.post('/', function (req, res) {
+                // get request data
+                console.log('Inside express', req.body, req.params, req);
+                //   console.log('I am here', { req, res });
+                // ExerciseApi.getExercises();
+                // handleData(req.body, typeName);
+                res.send('Hello World!');
+            });
+            app.listen(port_1, function () {
+                console.log("Example app listening on port ".concat(port_1));
+            });
+        }
         return [2 /*return*/];
     });
 }); };

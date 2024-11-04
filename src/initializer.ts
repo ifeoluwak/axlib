@@ -118,23 +118,26 @@ const handleData = (data: any, typeName: string) => {
 
 // @ts-ignore
 export const initialise = async () => {
-    const express = require('express')
-    const bodyParser = require('body-parser')
-    const app = express()
-    const port = 3000
-
-    app.use(bodyParser.json()) 
-
-    app.post('/', (req: any, res: any) => {
-        // get request data
-        console.log('Inside express', req.body, req.params, req);
-    //   console.log('I am here', { req, res });
-        // ExerciseApi.getExercises();
-        // handleData(req.body, typeName);
-        res.send('Hello World!')
-    })
-
-    app.listen(port, () => {
-        console.log(`Example app listening on port ${port}`)
-    })
+  console.log('Initialising... express app');
+    if (process.env.NODE_ENV === 'development') {
+      const express = require('express')
+      const bodyParser = require('body-parser')
+      const app = express()
+      const port = 3000
+  
+      app.use(bodyParser.json()) 
+  
+      app.post('/', (req: any, res: any) => {
+          // get request data
+          console.log('Inside express', req.body, req.params, req);
+      //   console.log('I am here', { req, res });
+          // ExerciseApi.getExercises();
+          // handleData(req.body, typeName);
+          res.send('Hello World!')
+      })
+  
+      app.listen(port, () => {
+          console.log(`Example app listening on port ${port}`)
+      })
+    }
 };
