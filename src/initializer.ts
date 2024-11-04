@@ -1,5 +1,6 @@
-import { Project, SyntaxKind } from 'ts-morph';
-import { makeType } from './makeTypes';
+// ignore ts error
+// @ts-ignore
+import { generateType } from './generateType';
 import { getConfig } from './getConfig';
 
 function relative(from: string, to: string) {
@@ -26,16 +27,18 @@ function relative(from: string, to: string) {
 
 // @ts-ignore
 const handleData = (data: any, typeName: string) => {
-    const project = new Project({
-        tsConfigFilePath: 'tsconfig.json',
-      });
+  const { Project, SyntaxKind } = require('ts-morph');
 
-      const config = getConfig();
-    
-    project.getSourceFile(`${config.apiPath}`);
-    const directory = project.createDirectory(`${config.typePath}`);
-    project.saveSync();
-    console.log('Directory', directory, config);
+  const project = new Project({
+      tsConfigFilePath: 'tsconfig.json',
+    });
+
+    const config = getConfig();
+  
+  project.getSourceFile(`${config.apiPath}`);
+  const directory = project.createDirectory(`${config.typePath}`);
+  project.saveSync();
+  console.log('Directory', directory, config);
   
   const sourceFiles = project.getSourceFiles(`${config.apiPath}/*.ts`);
 
@@ -48,7 +51,7 @@ const handleData = (data: any, typeName: string) => {
         // make unnecessary multiple changes to the file
         if (!thisTypeSourceFile) {
           // generate type file
-          makeType(`${typeName}.ts`, data, `${typeName}`);
+          generateType(`${typeName}.ts`, data, `${typeName}`);
           // get the current working directory
           let cwd = relative(
             `${config.apiPath}/${typeName}.ts`,
@@ -60,6 +63,7 @@ const handleData = (data: any, typeName: string) => {
   
           // add import to index.ts
           // add type to function
+          // @ts-ignore
           sourceFiles.forEach(sourceFile => {
             if (sourceFile.getImportDeclaration('../typed')) {
               console.log(sourceFile.getBaseName());
@@ -68,6 +72,7 @@ const handleData = (data: any, typeName: string) => {
                 const fnDefinition = sourceFile.getDescendantsOfKind(
                   SyntaxKind.ObjectLiteralExpression
                 );
+                // @ts-ignore
                 fnDefinition.forEach(fnDef => {
                   const prop = fnDef.getProperty(typeName);
                   console.log('Prop', prop?.getText());
@@ -75,8 +80,10 @@ const handleData = (data: any, typeName: string) => {
                     const pp = prop.getDescendantsOfKind(
                       SyntaxKind.CallExpression
                     );
+                    // @ts-ignore
                     pp.forEach(p => {
                       p.getDescendantsOfKind(SyntaxKind.Identifier).forEach(
+                        // @ts-ignore
                         id => {
                           const idt = id.getText();
                           if (

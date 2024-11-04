@@ -120,6 +120,7 @@ export const typedApiWrapper = <T>(obj: ObjectType<T>) => {
 // };
 
 export const typedApi = <T>(fn: FunctionType<T>) => {
+  // @ts-ignore
   return async (args: any) => {
     const typeName = fn.name;
     console.log('I am here \n\n\n\n\n\n\n\n\n\n\n', typeName, args);

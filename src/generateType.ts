@@ -1,8 +1,8 @@
-import { NopWriter, StreamWriter, Emitter } from 'maketypes';
+const { NopWriter, StreamWriter, Emitter } = require('maketypes');
 import * as fs from 'fs';
 import { getConfig } from './getConfig';
 
-export const makeType = async (
+export const generateType = (
   newTypeFile: string,
   data: unknown,
   typeName: string
