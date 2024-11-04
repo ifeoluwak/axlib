@@ -127,10 +127,13 @@ export const initialise = async () => {
   
       app.use(bodyParser.json()) 
       app.use(cors({
-        origin: 'http://localhost:3000'
+        origin: 'http://localhost:3000',
+        credentials: true,
+        optionSuccessStatus: 200
       })); 
   
       app.post('/', (req: any, res: any) => {
+        res.header('Access-Control-Allow-Origin', "http://localhost:3001");
           // get request data
           console.log('Inside express', req.body, req.params, req);
       //   console.log('I am here', { req, res });
