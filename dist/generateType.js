@@ -1,6 +1,6 @@
 var _a = require('maketypes'), NopWriter = _a.NopWriter, StreamWriter = _a.StreamWriter, Emitter = _a.Emitter;
 import * as fs from 'fs';
-import { getConfig } from './getConfig';
+import { getConfig } from './getConfig.js';
 export var generateType = function (newTypeFile, data, typeName) {
     var interfaceWriter = new NopWriter();
     var proxyWriter = interfaceWriter;
