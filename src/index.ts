@@ -2,6 +2,8 @@
 // import { makeType } from './makeTypes';
 // import { getConfig } from './getConfig';
 
+import { initialise } from "./initializer";
+
 
 
 type FunctionType<T> = (...args: any[]) => Promise<{ data: T }>;
@@ -123,6 +125,7 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
     console.log('I am here \n\n\n\n\n\n\n\n\n\n\n', typeName, args);
 
     try {
+      initialise();
       const bodys = await fn(args);
       if (bodys?.data) {
         setTimeout(() => {
