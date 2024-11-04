@@ -27,6 +27,7 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.21.1",
     "maketypes": "https://github.com/ifeoluwak/MakeTypes.git",
     "ts-morph": "^24.0.0",

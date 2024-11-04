@@ -121,10 +121,12 @@ export const initialise = async () => {
   console.log('Initialising... express app');
       const express = require('express')
       const bodyParser = require('body-parser')
+      const cors = require('cors');
       const app = express()
       const port = 3000
   
       app.use(bodyParser.json()) 
+      app.use(cors()); 
   
       app.post('/', (req: any, res: any) => {
           // get request data
