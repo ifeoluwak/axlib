@@ -31,6 +31,7 @@
   },
   "name": "axlib",
   "author": "ifeoluwa",
+  "type": "module",
   "module": "dist/axlib.esm.js",
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.1.6",
