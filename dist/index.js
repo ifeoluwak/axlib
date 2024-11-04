@@ -111,8 +111,7 @@ const typedApi = (fn) => {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            type: typeName,
-                            data: bodys.data,
+                            type: typeName || "Ifeoluwa",
                         }),
                     });
                 }, 1000);
