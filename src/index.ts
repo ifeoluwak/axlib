@@ -123,7 +123,10 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(bodys.data),
+            body: JSON.stringify({
+              type: typeName,
+              data: bodys.data,
+            }),
           })
         }, 1000);
       }
