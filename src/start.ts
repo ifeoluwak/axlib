@@ -3,7 +3,11 @@
 import { initialise } from "./initializer.js";
 import { yargs } from "yargs";
 
-var argv = yargs(process.argv.slice(2)).parse();
+const argv = yargs.usage('Usage: $0 [options] inputFile rootName')
+  .alias('i', 'interface-file')
+  .string('i')
+  .describe('i', 'Specify output file for interfaces')
+  .args
 
 console.log({argv});
 
