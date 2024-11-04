@@ -1,8 +1,8 @@
 import { __awaiter, __generator } from "tslib";
 // ignore ts error
 // @ts-ignore
-import { generateType } from './generateType';
-import { getConfig } from './getConfig';
+import { generateType } from './generateType.js';
+import { getConfig } from './getConfig.js';
 function relative(from, to) {
     if (!from || !to)
         throw new Error('Invalid or empty paths');

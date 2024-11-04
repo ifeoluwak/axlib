@@ -1,7 +1,7 @@
 // ignore ts error
 // @ts-ignore
-import { generateType } from './generateType';
-import { getConfig } from './getConfig';
+import { generateType } from './generateType.js';
+import { getConfig } from './getConfig.js';
 
 function relative(from: string, to: string) {
     if (!from || !to)
