@@ -5,7 +5,6 @@
   "engines": {
     "node": ">=10"
   },
-  "main": "src/index.ts",
   "scripts": {
     "build": "tsc --build tsconfig.json",
     "prepare": "tsc --build tsconfig.json"
@@ -18,8 +17,7 @@
   },
   "name": "axlib",
   "author": "ifeoluwa",
-  "type": "module",
-  "module": "dist/index.js",
+  "main": "dist/index.js",
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.1.6",
     "@types/node": "^22.8.7",

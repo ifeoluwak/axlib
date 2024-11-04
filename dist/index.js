@@ -1,11 +1,15 @@
-export const typedApiWrapper = (obj) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.typedApi = exports.typedApiWrapper = void 0;
+const typedApiWrapper = (obj) => {
     let newObj = {};
     for (const key in obj) {
         // @ts-ignore
-        newObj[key] = typedApi(obj[key]);
+        newObj[key] = (0, exports.typedApi)(obj[key]);
     }
     return newObj;
 };
+exports.typedApiWrapper = typedApiWrapper;
 // export const old_typedApi = <T>(fn: FunctionType<T>) => {
 //     const config = getConfig();
 //     project.getSourceFile(`${config.apiPath}`);
@@ -92,7 +96,7 @@ export const typedApiWrapper = (obj) => {
 //     }
 //   };
 // };
-export const typedApi = (fn) => {
+const typedApi = (fn) => {
     // @ts-ignore
     return async (args) => {
         const typeName = fn.name;
@@ -118,4 +122,5 @@ export const typedApi = (fn) => {
         }
     };
 };
+exports.typedApi = typedApi;
 //# sourceMappingURL=index.js.map

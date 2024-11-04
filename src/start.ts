@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import { initialise } from "./initializer.js";
+import { yargs } from "yargs";
 
-var argv = require('yargs/yargs')(process.argv.slice(2)).parse();
+var argv = yargs(process.argv.slice(2)).parse();
 
 console.log({argv});
 

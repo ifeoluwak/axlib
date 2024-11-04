@@ -1,7 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.initialise = void 0;
 // ignore ts error
 // @ts-ignore
-import { generateType } from './generateType.js';
-import { getConfig } from './getConfig.js';
+const generateType_js_1 = require("./generateType.js");
+const getConfig_js_1 = require("./getConfig.js");
 function relative(from, to) {
     if (!from || !to)
         throw new Error('Invalid or empty paths');
@@ -30,7 +33,7 @@ const handleData = (data, typeName) => {
     const project = new Project({
         tsConfigFilePath: 'tsconfig.json',
     });
-    const config = getConfig();
+    const config = (0, getConfig_js_1.getConfig)();
     project.getSourceFile(`${config.apiPath}`);
     const directory = project.createDirectory(`${config.typePath}`);
     project.saveSync();
@@ -43,7 +46,7 @@ const handleData = (data, typeName) => {
         // make unnecessary multiple changes to the file
         if (!thisTypeSourceFile) {
             // generate type file
-            generateType(`${typeName}.ts`, data, `${typeName}`);
+            (0, generateType_js_1.generateType)(`${typeName}.ts`, data, `${typeName}`);
             // get the current working directory
             let cwd = relative(`${config.apiPath}/${typeName}.ts`, `${config.typePath}/${typeName}.ts`);
             // remove the .ts extension
@@ -93,7 +96,7 @@ const handleData = (data, typeName) => {
     }
 };
 // @ts-ignore
-export const initialise = async () => {
+const initialise = async () => {
     console.log('Initialising... express app');
     if (process.env.NODE_ENV === 'development') {
         const express = require('express');
@@ -114,4 +117,5 @@ export const initialise = async () => {
         });
     }
 };
+exports.initialise = initialise;
 //# sourceMappingURL=initializer.js.map
