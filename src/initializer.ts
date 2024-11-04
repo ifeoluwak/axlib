@@ -119,7 +119,6 @@ const handleData = (data: any, typeName: string) => {
 // @ts-ignore
 export const initialise = async () => {
   console.log('Initialising... express app');
-    if (process.env.NODE_ENV === 'development') {
       const express = require('express')
       const bodyParser = require('body-parser')
       const app = express()
@@ -139,5 +138,4 @@ export const initialise = async () => {
       app.listen(port, () => {
           console.log(`Example app listening on port ${port}`)
       })
-    }
 };
