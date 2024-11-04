@@ -115,7 +115,7 @@ const initialise = async () => {
     app.options('*', cors()); // include before other routes
     app.post('/', (req, res) => {
         // get request data
-        console.log('Inside express', req.body, req.params, req);
+        console.log('Inside express', req.body);
         //   console.log('I am here', { req, res });
         // ExerciseApi.getExercises();
         // handleData(req.body, typeName);
