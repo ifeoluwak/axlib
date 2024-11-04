@@ -2,4 +2,10 @@
 
 import { initialise } from "./initializer";
 
-initialise();
+var argv = require('yargs/yargs')(process.argv.slice(2)).parse();
+
+console.log({argv});
+
+if (argv.init) {
+  initialise();
+}
