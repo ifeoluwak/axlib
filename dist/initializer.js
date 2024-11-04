@@ -110,7 +110,7 @@ const initialise = async () => {
         optionSuccessStatus: 200
     }));
     app.post('/', (req, res) => {
-        res.header('Access-Control-Allow-Origin', "http://localhost:3001");
+        res.header('Access-Control-Allow-Origin', "http://localhost:3000");
         // get request data
         console.log('Inside express', req.body, req.params, req);
         //   console.log('I am here', { req, res });
