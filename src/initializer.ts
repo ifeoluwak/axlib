@@ -123,17 +123,12 @@ export const initialise = async () => {
       const bodyParser = require('body-parser')
       const cors = require('cors');
       const app = express()
-      const port = 3000
+      const port = 80
   
+      app.use(cors()); 
       app.use(bodyParser.json()) 
-      app.use(cors({
-        origin: 'http://localhost:3000',
-        credentials: true,
-        optionSuccessStatus: 200
-      })); 
   
       app.post('/', (req: any, res: any) => {
-        res.header('Access-Control-Allow-Origin', "http://localhost:3000");
           // get request data
           console.log('Inside express', req.body, req.params, req);
       //   console.log('I am here', { req, res });
