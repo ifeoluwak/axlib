@@ -103,8 +103,11 @@ const initialise = async () => {
     const cors = require('cors');
     const app = express();
     const port = 80;
+    app.use(cors({
+        origin: 'http://localhost:3000'
+    }));
     app.use(bodyParser.json());
-    app.use(cors());
+    app.options('*', cors()); // include before other routes
     app.post('/', (req, res) => {
         // get request data
         console.log('Inside express', req.body, req.params, req);
