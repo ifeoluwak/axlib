@@ -3,6 +3,7 @@ import { getConfig } from './getConfig.js';
 import express from "express";
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import { Project, SyntaxKind } from 'ts-morph';
 function relative(from, to) {
     if (!from || !to)
         throw new Error('Invalid or empty paths');
@@ -27,7 +28,6 @@ function relative(from, to) {
 }
 // @ts-ignore
 const handleData = (data, typeName) => {
-    const { Project, SyntaxKind } = require('ts-morph');
     const project = new Project({
         tsConfigFilePath: 'tsconfig.json',
     });

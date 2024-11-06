@@ -3,6 +3,8 @@ import { getConfig } from './getConfig.js';
 import express from "express";
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import { Project, SyntaxKind } from 'ts-morph';
+
 
 function relative(from: string, to: string) {
     if (!from || !to)
@@ -28,7 +30,6 @@ function relative(from: string, to: string) {
 
 // @ts-ignore
 const handleData = (data: any, typeName: string) => {
-  const { Project, SyntaxKind } = require('ts-morph');
 
   const project = new Project({
       tsConfigFilePath: 'tsconfig.json',
