@@ -1,4 +1,4 @@
-import { NopWriter, StreamWriter, Emitter } from 'maketypes';
+import { NopWriter, StreamWriter, Emitter } from 'generate-ts-types';
 import * as fs from 'fs';
 import { getConfig } from './getConfig.js';
 

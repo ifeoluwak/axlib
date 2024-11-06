@@ -6,8 +6,8 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "tsc --build tsconfig.json",
-    "prepare": "tsc --build tsconfig.json"
+    "build": "tsc",
+    "prepare": "tsc"
   },
   "prettier": {
     "printWidth": 80,
@@ -16,7 +16,7 @@
     "trailingComma": "es5"
   },
   "name": "axlib",
-  "author": "ifeoluwa",
+  "author": "Ifeoluwa King <ifeoluwaking24@gmail.com>",
   "main": "dist/index.js",
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.1.6",
@@ -29,10 +29,18 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "maketypes": "https://github.com/ifeoluwak/MakeTypes.git",
+    "generate-ts-types": "^1.1.3",
     "ts-morph": "^24.0.0",
     "yargs": "^17.7.2"
   },
+  "bugs": {
+    "url": "https://github.com/ifeoluwak/axlib/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ifeoluwak/axlib.git"
+  },
+  "files": ["dist"],
   "axlib": {
     "objectType": "type",
     "typePath": "src/type",
