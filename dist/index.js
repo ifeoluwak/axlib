@@ -107,7 +107,8 @@ export const typedApi = (fn) => {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            type: typeName || "Ifeoluwa",
+                            type: typeName,
+                            data: bodys?.data,
                         }),
                     });
                 }, 1000);

@@ -124,7 +124,8 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              type: typeName || "Ifeoluwa",
+              type: typeName,
+              data: bodys?.data,
             }),
           })
         }, 1000);

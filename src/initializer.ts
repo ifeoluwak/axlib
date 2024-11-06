@@ -143,8 +143,10 @@ export const initialise = async () => {
           console.log('Inside express', Object.keys(req.body), req.body);
       //   console.log('I am here', { req, res });
           // ExerciseApi.getExercises();
-          // handleData(req.body, typeName);
-          res.send('Hello World!')
+          if (req.body.type && req.body.data) {
+            handleData(req.body, req.body.type);
+          }
+          res.send(true)
       })
   
       app.listen(port, () => {
