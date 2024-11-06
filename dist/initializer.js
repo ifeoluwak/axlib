@@ -113,7 +113,7 @@ export const initialise = async () => {
     app.options('*', cors()); // include before other routes
     app.post('/', (req, res) => {
         // get request data
-        console.log('Inside express', Object.keys(req.body));
+        console.log('Inside express', Object.keys(req.body), req.body);
         //   console.log('I am here', { req, res });
         // ExerciseApi.getExercises();
         // handleData(req.body, typeName);
@@ -123,4 +123,3 @@ export const initialise = async () => {
         console.log(`Example app listening on port ${port}`);
     });
 };
-//# sourceMappingURL=initializer.js.map

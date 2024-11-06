@@ -120,4 +120,3 @@ export const typedApi = (fn) => {
         }
     };
 };
-//# sourceMappingURL=index.js.map

@@ -7,4 +7,3 @@ export const getConfig = () => {
     axlib.apiPath = axlib.apiPath || 'api';
     return axlib;
 };
-//# sourceMappingURL=getConfig.js.map

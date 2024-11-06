@@ -7,4 +7,3 @@ if (argv.init) {
     console.log('got here... express app');
     initialise();
 }
-//# sourceMappingURL=start.js.map

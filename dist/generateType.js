@@ -17,4 +17,3 @@ export const generateType = (newTypeFile, data, typeName) => {
     const e = new Emitter(interfaceWriter, proxyWriter, config?.objectType);
     e.emit(data, typeName);
 };
-//# sourceMappingURL=generateType.js.map
