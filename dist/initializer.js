@@ -1,5 +1,8 @@
 import { generateType } from './generateType.js';
 import { getConfig } from './getConfig.js';
+import express from "express";
+import bodyParser from 'body-parser';
+import cors from 'cors';
 function relative(from, to) {
     if (!from || !to)
         throw new Error('Invalid or empty paths');
@@ -93,9 +96,9 @@ const handleData = (data, typeName) => {
 // @ts-ignore
 export const initialise = async () => {
     console.log('Initialising... express app');
-    const express = require('express');
-    const bodyParser = require('body-parser');
-    const cors = require('cors');
+    // const express = require('express')
+    // const bodyParser = require('body-parser')
+    // const cors = require('cors');
     const app = express();
     const port = 4000;
     app.use(cors({

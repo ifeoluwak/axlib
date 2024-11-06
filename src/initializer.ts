@@ -1,5 +1,8 @@
 import { generateType } from './generateType.js';
 import { getConfig } from './getConfig.js';
+import express from "express";
+import bodyParser from 'body-parser';
+import cors from 'cors';
 
 function relative(from: string, to: string) {
     if (!from || !to)
@@ -117,9 +120,9 @@ const handleData = (data: any, typeName: string) => {
 // @ts-ignore
 export const initialise = async () => {
   console.log('Initialising... express app');
-      const express = require('express')
-      const bodyParser = require('body-parser')
-      const cors = require('cors');
+      // const express = require('express')
+      // const bodyParser = require('body-parser')
+      // const cors = require('cors');
       const app = express()
       const port = 4000
   
