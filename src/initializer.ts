@@ -67,7 +67,7 @@ const handleData = (data: any, typeName: string) => {
           // add type to function
           // @ts-ignore
           sourceFiles.forEach(sourceFile => {
-            if (sourceFile.getImportDeclaration('../typed')) {
+            if (sourceFile.getImportDeclaration('axlib')) {
               console.log(sourceFile.getBaseName());
               const text = sourceFile.getText();
               if (text.includes('typedApiWrapper') && text.includes(typeName)) {
@@ -145,7 +145,7 @@ export const initialise = async () => {
       //   console.log('I am here', { req, res });
           // ExerciseApi.getExercises();
           if (req.body.type && req.body.data) {
-            handleData(req.body, req.body.type);
+            handleData(req.body.data, req.body.type);
           }
           res.send(true)
       })
