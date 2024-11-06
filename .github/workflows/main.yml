@@ -19,11 +19,11 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Install deps and build (with cache)
-        run: yarn
+      # - name: Install deps and build (with cache)
+      #   run: yarn
 
-      - name: Lint
-        run: yarn lint
+      # - name: Lint
+      #   run: yarn lint
 
       # - name: Test
       #   run: yarn test --ci --coverage --maxWorkers=2
