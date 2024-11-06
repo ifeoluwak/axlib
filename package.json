@@ -18,6 +18,7 @@
   "name": "axlib",
   "author": "Ifeoluwa King <ifeoluwaking24@gmail.com>",
   "main": "dist/index.js",
+  "type": "module",
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.1.6",
     "@types/node": "^22.8.7",

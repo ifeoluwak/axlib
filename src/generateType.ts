@@ -1,6 +1,6 @@
-import { NopWriter, StreamWriter, Emitter } from 'generate-ts-types';
 import * as fs from 'fs';
 import { getConfig } from './getConfig.js';
+import { Emitter, NopWriter, StreamWriter } from 'generate-ts-types';
 
 export const generateType = (
   newTypeFile: string,
