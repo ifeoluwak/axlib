@@ -1,5 +1,3 @@
-// ignore ts error
-// @ts-ignore
 import { generateType } from './generateType.js';
 import { getConfig } from './getConfig.js';
 function relative(from, to) {
