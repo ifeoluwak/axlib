@@ -110,13 +110,13 @@ const handleData = (data: any, typeName: string) => {
                         }
                       );
                     });
-                    sourceFile.save().catch(e => {
-                      console.log('Error saving file', e);
-                    });
                   }
                 });
               }
             }
+          });
+          project.save().catch(e => {
+            console.log('Error saving file', e);
           });
         }
       }
