@@ -35,9 +35,18 @@ const handleDataWrapper = () => {
   const project = new Project({
     tsConfigFilePath: 'tsconfig.json',
   });
+  const config = getConfig();
+  
+  project.getSourceFile(`${config.apiPath}`);
+  const dir = project.getDirectory(`${config.typePath}`);
+
   console.log("Initialising handleDataWrapper", pendingData, isRunning);
   // @ts-ignore
 const handleData = (data: any, typeName: string) => {
+  if (!dir) {
+    console.log('Directory does not exist');
+    return;
+  }
   if (isRunning) {
     console.log('Data is pending ---->', typeName);
     pendingData.set(typeName, data);
@@ -55,11 +64,6 @@ const handleData = (data: any, typeName: string) => {
 
 
   console.log('Pending Data', pendingData);
-
-  const config = getConfig();
-  
-  project.getSourceFile(`${config.apiPath}`);
-  project.createDirectory(`${config.typePath}`);
   // project.saveSync();
   // console.log('Directory', directory, config);
   
