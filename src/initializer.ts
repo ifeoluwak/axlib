@@ -110,7 +110,9 @@ const handleData = (data: any, typeName: string) => {
                         }
                       );
                     });
-                    sourceFile.saveSync();
+                    sourceFile.save().catch(e => {
+                      console.log('Error saving file', e);
+                    });
                   }
                 });
               }

@@ -86,7 +86,9 @@ const handleData = (data, typeName) => {
                                         }
                                     });
                                 });
-                                sourceFile.saveSync();
+                                sourceFile.save().catch(e => {
+                                    console.log('Error saving file', e);
+                                });
                             }
                         });
                     }
