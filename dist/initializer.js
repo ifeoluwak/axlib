@@ -4,6 +4,7 @@ import express from "express";
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { Project, SyntaxKind } from 'ts-morph';
+import camelcase from 'camelcase';
 function relative(from, to) {
     if (!from || !to)
         throw new Error('Invalid or empty paths');
@@ -43,8 +44,9 @@ const handleData = (data, typeName) => {
         // only generate type file if it does not exist, so that we don't
         // make unnecessary multiple changes to the file
         if (!thisTypeSourceFile) {
+            const formattedName = camelcase(typeName, { pascalCase: true });
             // generate type file
-            generateType(`${typeName}.ts`, data, `${typeName}`);
+            generateType(`${typeName}.ts`, data, `${formattedName}`);
             // get the current working directory
             let cwd = relative(`${config.apiPath}/${typeName}.ts`, `${config.typePath}/${typeName}.ts`);
             // remove the .ts extension
@@ -75,10 +77,10 @@ const handleData = (data, typeName) => {
                                             p.setExpression(`${p
                                                 .getExpression()
                                                 .getText()
-                                                .replace(idt, `${idt}<{ data: ${typeName} }>`)}`);
+                                                .replace(idt, `${idt}<{ data: ${formattedName} }>`)}`);
                                             sourceFile.addImportDeclaration({
                                                 moduleSpecifier: `${cwd}`,
-                                                namedImports: [typeName],
+                                                namedImports: [formattedName],
                                             });
                                             // sourceFile.saveSync();
                                         }
