@@ -27,6 +27,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "generate-ts-types": "1.1.7",
+    "throttleit": "^2.1.0",
     "ts-morph": "^24.0.0",
     "yargs": "^17.7.2"
   },

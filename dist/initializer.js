@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import { Project, SyntaxKind } from 'ts-morph';
 import camelcase from 'camelcase';
+import throttle from 'throttleit';
 function relative(from, to) {
     if (!from || !to)
         throw new Error('Invalid or empty paths');
@@ -39,32 +40,25 @@ class HandleDataWrapper {
             tsConfigFilePath: 'tsconfig.json',
         });
         this.config = getConfig();
-        console.log("Initialising handleDataWrapper", this.pendingData, this.isRunning);
+        console.log("Initialising handleDataWrapper");
     }
     // @ts-ignore
     handleData(data, typeName) {
-        if (this.isRunning) {
-            console.log('Data is pending ---->', typeName, this.pendingData);
-            // if (!this.pendingData.has(typeName)) {
-            this.pendingData.set(typeName, data);
-            // }
-            return;
-        }
-        ;
+        const project = new Project({
+            tsConfigFilePath: 'tsconfig.json',
+        });
         this.isRunning = true;
-        console.log('Currently running ----->', typeName);
-        this.project.getDirectoryOrThrow(`${this.config.apiPath}`);
-        this.project.getDirectoryOrThrow(`${this.config.typePath}`);
-        // project.saveSync();
-        // console.log('Config', this.config);
-        const sourceFiles = this.project.getSourceFile(`${this.config.apiPath}/*.ts`);
+        console.log('Currently running ----->', typeName, this.isRunning, Date());
+        project.getDirectoryOrThrow(`${this.config.apiPath}`);
+        project.getDirectoryOrThrow(`${this.config.typePath}`);
+        const sourceFiles = project.getSourceFiles(`${this.config.apiPath}/*.ts`);
         if (data) {
             // check if type file exists
-            const thisTypeSourceFile = this.project.getSourceFile(`${this.config.apiPath}/${typeName}.ts`);
-            console.log('ThisTypeSourceFile', thisTypeSourceFile);
+            const thisTypeSourceFile = project.getSourceFile(`${this.config.typePath}/${typeName}.ts`);
             // only generate type file if it does not exist, so that we don't
             // make unnecessary multiple changes to the file
             if (!thisTypeSourceFile) {
+                console.log('file does not exisit - -- - - - >', thisTypeSourceFile);
                 const formattedName = camelcase(typeName, { pascalCase: true });
                 // generate type file
                 generateType(`${typeName}.ts`, data, `${formattedName}`);
@@ -72,20 +66,19 @@ class HandleDataWrapper {
                 let cwd = relative(`${this.config.apiPath}/${typeName}.ts`, `${this.config.typePath}/${typeName}.ts`);
                 // remove the .ts extension
                 cwd = cwd.replace('.ts', '');
-                console.log('CWD', cwd);
                 // add import to index.ts
                 // add type to function
                 // @ts-ignore
                 sourceFiles.forEach(sourceFile => {
                     if (sourceFile.getImportDeclaration('axlib')) {
-                        console.log(sourceFile.getBaseName());
+                        // console.log(sourceFile.getBaseName());
                         const text = sourceFile.getText();
                         if (text.includes('typedApiWrapper') && text.includes(typeName)) {
                             const fnDefinition = sourceFile.getDescendantsOfKind(SyntaxKind.ObjectLiteralExpression);
                             // @ts-ignore
                             fnDefinition.forEach(fnDef => {
                                 const prop = fnDef.getProperty(typeName);
-                                console.log('Prop', prop?.getText());
+                                // console.log('Prop', prop?.getText());
                                 if (prop) {
                                     const pp = prop.getDescendantsOfKind(SyntaxKind.CallExpression);
                                     if (pp.length) {
@@ -117,18 +110,7 @@ class HandleDataWrapper {
             }
         }
         this.isRunning = false;
-        if (this.pendingData.size) {
-            const [typeName, data] = this.pendingData.entries().next().value;
-            this.pendingData.delete(typeName);
-            this.handleData(data, typeName);
-        }
-        else {
-            console.log('No more pending data');
-            // all pending data has been handled
-            // this.project.saveSync();
-        }
     }
-    ;
 }
 ;
 // @ts-ignore
@@ -138,6 +120,7 @@ export const initialise = async () => {
     const app = express();
     const port = 4000;
     const handler = new HandleDataWrapper();
+    const throttled = throttle((d, t) => handler.handleData(d, t), 1500);
     app.use(cors({
         origin: 'http://localhost:3000'
     }));
@@ -151,7 +134,7 @@ export const initialise = async () => {
     app.post('/', (req, res) => {
         console.log('Inside express', Object.keys(req.body));
         if (req.body.type && req.body.data) {
-            handler.handleData(req.body.data, req.body.type);
+            throttled(req.body.data, req.body.type);
         }
         res.send(true);
     });
