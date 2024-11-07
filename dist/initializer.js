@@ -45,7 +45,9 @@ class HandleDataWrapper {
     handleData(data, typeName) {
         if (this.isRunning) {
             console.log('Data is pending ---->', typeName, this.pendingData);
-            this.pendingData.set(typeName, data);
+            if (!this.pendingData.has(typeName)) {
+                this.pendingData.set(typeName, data);
+            }
             return;
         }
         ;
