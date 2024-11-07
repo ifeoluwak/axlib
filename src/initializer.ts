@@ -79,7 +79,7 @@ class HandleDataWrapper {
                 // generate type file
                 generateType(`${typeName}.ts`, data, `${formattedName}`);
 
-                spinner.succeed(greenLog(`${formattedName} type generated. See -> ${this.config.typePath}/${typeName}.ts`));
+                spinner.succeed(greenLog(`${formattedName} type generated.`) + chalk.dim.underline(`See -> ${this.config.typePath}/${typeName}.ts`));
                 spinner.start(`Adding ${this.config.objectType} to ${typeName} in ${this.config.apiPath}/${typeName}.ts`);
 
                 // get the current working directory
@@ -118,7 +118,7 @@ class HandleDataWrapper {
                                                         moduleSpecifier: `${cwd}`,
                                                         namedImports: [formattedName],
                                                     });
-                                                    spinner.succeed(greenLog(`Type added to ${typeName} in ${this.config.apiPath}/${typeName}.ts`));
+                                                    spinner.succeed(greenLog(`Type added to ${typeName} in `) + chalk.dim.underline(`${this.config.apiPath}/${typeName}.ts`));
                                                     sourceFile.saveSync();
                                                 }
                                             });
@@ -138,7 +138,7 @@ class HandleDataWrapper {
 
 // @ts-ignore
 export const initialise = async () => {
-  console.log('Initialising... express app');;
+  // console.log('Initialising... express app');;
       const app = express()
       const port = 4000
       const handler = new HandleDataWrapper();
@@ -166,6 +166,6 @@ export const initialise = async () => {
       })
   
       app.listen(port, () => {
-          console.log(`Example app listening on port ${port}`)
+          // console.log(`Example app listening on port ${port}`)
       })
 };
