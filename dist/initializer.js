@@ -42,13 +42,18 @@ const handleDataWrapper = () => {
             return;
         }
         ;
+        if (!data) {
+            console.log('No data to handle');
+            return;
+        }
         isRunning = true;
         console.log('Currently running ----->', typeName);
+        console.log('Pending Data', pendingData);
         const config = getConfig();
         project.getSourceFile(`${config.apiPath}`);
-        const directory = project.createDirectory(`${config.typePath}`);
+        project.createDirectory(`${config.typePath}`);
         // project.saveSync();
-        console.log('Directory', directory, config);
+        // console.log('Directory', directory, config);
         const sourceFiles = project.getSourceFiles(`${config.apiPath}/*.ts`);
         if (data) {
             // check if type file exists
@@ -112,9 +117,12 @@ const handleDataWrapper = () => {
             }
         }
         isRunning = false;
-        if (pendingData.size) {
+        const pendingDataValues = Array.from(pendingData.values());
+        if (pendingDataValues.some(Boolean)) {
             const [typeName, data] = pendingData.entries().next().value;
-            pendingData.delete(typeName);
+            // set the pending data to null
+            // so we can know that it has been handled before
+            pendingData.set(typeName, null);
             handleData(data, typeName);
         }
         else {
