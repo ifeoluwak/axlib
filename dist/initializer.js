@@ -6,6 +6,12 @@ import cors from 'cors';
 import { Project, SyntaxKind } from 'ts-morph';
 import camelcase from 'camelcase';
 import throttle from 'throttleit';
+import chalk from 'chalk';
+import ora from 'ora';
+const greenLog = chalk.green;
+const spinner = ora({
+    text: 'Loading',
+});
 function relative(from, to) {
     if (!from || !to)
         throw new Error('Invalid or empty paths');
@@ -40,7 +46,7 @@ class HandleDataWrapper {
             tsConfigFilePath: 'tsconfig.json',
         });
         this.config = getConfig();
-        console.log("Initialising handleDataWrapper");
+        greenLog("Type Generation Service Started");
     }
     // @ts-ignore
     handleData(data, typeName) {
@@ -48,20 +54,23 @@ class HandleDataWrapper {
             tsConfigFilePath: 'tsconfig.json',
         });
         this.isRunning = true;
-        console.log('Currently running ----->', typeName, this.isRunning, Date());
+        // console.log('Currently running ----->', typeName, this.isRunning, Date());
         project.getDirectoryOrThrow(`${this.config.apiPath}`);
         project.getDirectoryOrThrow(`${this.config.typePath}`);
         const sourceFiles = project.getSourceFiles(`${this.config.apiPath}/*.ts`);
         if (data) {
+            spinner.start(`Generating ${this.config.objectType} for ${typeName}`);
             // check if type file exists
             const thisTypeSourceFile = project.getSourceFile(`${this.config.typePath}/${typeName}.ts`);
             // only generate type file if it does not exist, so that we don't
             // make unnecessary multiple changes to the file
             if (!thisTypeSourceFile) {
-                console.log('file does not exisit - -- - - - >', thisTypeSourceFile);
+                // console.log('file does not exisit - -- - - - >', thisTypeSourceFile);
                 const formattedName = camelcase(typeName, { pascalCase: true });
                 // generate type file
                 generateType(`${typeName}.ts`, data, `${formattedName}`);
+                spinner.succeed(greenLog(`${formattedName} type generated. See -> ${this.config.typePath}/${typeName}.ts`));
+                spinner.start(`Adding ${this.config.objectType} to ${typeName} in ${this.config.apiPath}/${typeName}.ts`);
                 // get the current working directory
                 let cwd = relative(`${this.config.apiPath}/${typeName}.ts`, `${this.config.typePath}/${typeName}.ts`);
                 // remove the .ts extension
@@ -97,6 +106,7 @@ class HandleDataWrapper {
                                                         moduleSpecifier: `${cwd}`,
                                                         namedImports: [formattedName],
                                                     });
+                                                    spinner.succeed(greenLog(`Type added to ${typeName} in ${this.config.apiPath}/${typeName}.ts`));
                                                     sourceFile.saveSync();
                                                 }
                                             });
@@ -109,6 +119,7 @@ class HandleDataWrapper {
                 });
             }
         }
+        spinner.stop();
         this.isRunning = false;
     }
 }
