@@ -29,49 +29,43 @@ function relative(from: string, to: string) {
     return path;
 }
 
-const handleDataWrapper = () => {
-  let isRunning = false;
-  const pendingData = new Map<string, any>();
-  const project = new Project({
-    tsConfigFilePath: 'tsconfig.json',
-  });
-  const config = getConfig();
-  
-  project.getSourceFile(`${config.apiPath}`);
-  const dir = project.getDirectory(`${config.typePath}`);
+class HandleDataWrapper {
+  isRunning: boolean;
+  pendingData: Map<string, any>;
+  project: Project;
 
-  console.log("Initialising handleDataWrapper", pendingData, isRunning);
+  constructor() {
+    this.isRunning = false;
+    this.pendingData = new Map<string, any>();
+    this.project = new Project({
+      tsConfigFilePath: 'tsconfig.json',
+    });
+    console.log("Initialising handleDataWrapper", this.pendingData, this.isRunning);
+  }
   // @ts-ignore
-const handleData = (data: any, typeName: string) => {
-  if (!dir) {
-    console.log('Directory does not exist');
-    return;
-  }
-  if (isRunning) {
-    console.log('Data is pending ---->', typeName);
-    pendingData.set(typeName, data);
-    return;
-  };
+  handleData(data: any, typeName: string) {
+    if (this.isRunning) {
+      console.log('Data is pending ---->', typeName);
+      this.pendingData.set(typeName, data);
+      return;
+    };
 
-  if (pendingData.has(typeName)) {
-    console.log('No data to handle');
-    return;
-  }
+    this.isRunning = true;
 
-  isRunning = true;
+    console.log('Currently running ----->', typeName);
 
-  console.log('Currently running ----->', typeName);
-
-
-  console.log('Pending Data', pendingData);
-  // project.saveSync();
-  // console.log('Directory', directory, config);
-  
-  const sourceFiles = project.getSourceFiles(`${config.apiPath}/*.ts`);
+    const config = getConfig();
+    
+    this.project.getSourceFile(`${config.apiPath}`);
+    const directory = this.project.createDirectory(`${config.typePath}`);
+    // project.saveSync();
+    console.log('Directory', directory, config);
+    
+    const sourceFiles = this.project.getSourceFiles(`${config.apiPath}/*.ts`);
 
     if (data) {
         // check if type file exists
-        const thisTypeSourceFile = project.getSourceFile(
+        const thisTypeSourceFile = this.project.getSourceFile(
           `${config.apiPath}/${typeName}.ts`
         );
         console.log('ThisTypeSourceFile', thisTypeSourceFile);
@@ -142,40 +136,28 @@ const handleData = (data: any, typeName: string) => {
               }
             }
           });
-          // project.save().catch(e => {
-          //   console.log('Error saving file', e);
-          // });
         }
     }
-    isRunning = false;
-    const pendingDataValues = Array.from(pendingData.values());
-    if (pendingDataValues.some(Boolean)) {
-      const [typeName, data] = pendingData.entries().next().value;
-      // set the pending data to null
-      // so we can know that it has been handled before
-      pendingData.set(typeName, null);
-      handleData(data, typeName);
+    this.isRunning = false;
+    if (this.pendingData.size) {
+      const [typeName, data] = this.pendingData.entries().next().value;
+      this.pendingData.delete(typeName);
+      this.handleData(data, typeName);
     } else {
       console.log('No more pending data');
       // all pending data has been handled
-      project.save().catch(e => {
-        console.log('Error saving file', e);
-      });
+      this.project.saveSync();
     }
-};
-
-return (data: any, typeName: string) => handleData(data, typeName);
+  };
+// return (data: any, typeName: string) => handleData(data, typeName);
 };
 
 // @ts-ignore
 export const initialise = async () => {
-  console.log('Initialising... express app');
-      // const express = require('express')
-      // const bodyParser = require('body-parser')
-      // const cors = require('cors');
+  console.log('Initialising... express app');;
       const app = express()
       const port = 4000
-      const handler = handleDataWrapper();
+      const handler = new HandleDataWrapper();
   
       app.use(cors({
           origin: 'http://localhost:3000'
@@ -187,16 +169,12 @@ export const initialise = async () => {
         next();
       });
 
-      app.options('*', cors()) // include before other routes
+      app.options('*', cors())
   
       app.post('/', (req: any, res: any) => {
-          // get request data
           console.log('Inside express', Object.keys(req.body));
-      //   console.log('I am here', { req, res });
-          // ExerciseApi.getExercises();
           if (req.body.type && req.body.data) {
-            handler(req.body.data, req.body.type);
-            // handleData(req.body.data, req.body.type);
+            handler.handleData(req.body.data, req.body.type);
           }
           res.send(true)
       })
