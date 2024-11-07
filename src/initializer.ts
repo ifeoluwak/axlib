@@ -44,7 +44,7 @@ const handleData = (data: any, typeName: string) => {
     return;
   };
 
-  if (!data) {
+  if (pendingData.has(typeName)) {
     console.log('No data to handle');
     return;
   }

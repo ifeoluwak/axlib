@@ -42,7 +42,7 @@ const handleDataWrapper = () => {
             return;
         }
         ;
-        if (!data) {
+        if (pendingData.has(typeName)) {
             console.log('No data to handle');
             return;
         }
