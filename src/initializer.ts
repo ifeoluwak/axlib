@@ -32,6 +32,7 @@ function relative(from: string, to: string) {
 const handleDataWrapper = () => {
   let isRunning = false;
   const pendingData = new Map<string, any>();
+  console.log("Initialising handleDataWrapper", pendingData, isRunning);
   // @ts-ignore
 const handleData = (data: any, typeName: string) => {
   if (isRunning) {
@@ -169,7 +170,7 @@ export const initialise = async () => {
   
       app.post('/', (req: any, res: any) => {
           // get request data
-          console.log('Inside express', Object.keys(req.body), req.body);
+          console.log('Inside express', Object.keys(req.body));
       //   console.log('I am here', { req, res });
           // ExerciseApi.getExercises();
           if (req.body.type && req.body.data) {
