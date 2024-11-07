@@ -30,6 +30,9 @@ function relative(from, to) {
 const handleDataWrapper = () => {
     let isRunning = false;
     const pendingData = new Map();
+    const project = new Project({
+        tsConfigFilePath: 'tsconfig.json',
+    });
     console.log("Initialising handleDataWrapper", pendingData, isRunning);
     // @ts-ignore
     const handleData = (data, typeName) => {
@@ -41,9 +44,6 @@ const handleDataWrapper = () => {
         ;
         isRunning = true;
         console.log('Currently running ----->', typeName);
-        const project = new Project({
-            tsConfigFilePath: 'tsconfig.json',
-        });
         const config = getConfig();
         project.getSourceFile(`${config.apiPath}`);
         const directory = project.createDirectory(`${config.typePath}`);
@@ -53,6 +53,7 @@ const handleDataWrapper = () => {
         if (data) {
             // check if type file exists
             const thisTypeSourceFile = project.getSourceFile(`${config.apiPath}/${typeName}.ts`);
+            console.log('ThisTypeSourceFile', thisTypeSourceFile);
             // only generate type file if it does not exist, so that we don't
             // make unnecessary multiple changes to the file
             if (!thisTypeSourceFile) {
@@ -105,9 +106,9 @@ const handleDataWrapper = () => {
                         }
                     }
                 });
-                project.save().catch(e => {
-                    console.log('Error saving file', e);
-                });
+                // project.save().catch(e => {
+                //   console.log('Error saving file', e);
+                // });
             }
         }
         isRunning = false;
@@ -115,6 +116,13 @@ const handleDataWrapper = () => {
             const [typeName, data] = pendingData.entries().next().value;
             pendingData.delete(typeName);
             handleData(data, typeName);
+        }
+        else {
+            console.log('No more pending data');
+            // all pending data has been handled
+            project.save().catch(e => {
+                console.log('Error saving file', e);
+            });
         }
     };
     return (data, typeName) => handleData(data, typeName);

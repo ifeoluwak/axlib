@@ -32,6 +32,9 @@ function relative(from: string, to: string) {
 const handleDataWrapper = () => {
   let isRunning = false;
   const pendingData = new Map<string, any>();
+  const project = new Project({
+    tsConfigFilePath: 'tsconfig.json',
+  });
   console.log("Initialising handleDataWrapper", pendingData, isRunning);
   // @ts-ignore
 const handleData = (data: any, typeName: string) => {
@@ -45,9 +48,7 @@ const handleData = (data: any, typeName: string) => {
 
   console.log('Currently running ----->', typeName);
 
-  const project = new Project({
-      tsConfigFilePath: 'tsconfig.json',
-    });
+
 
   const config = getConfig();
   
@@ -63,6 +64,7 @@ const handleData = (data: any, typeName: string) => {
         const thisTypeSourceFile = project.getSourceFile(
           `${config.apiPath}/${typeName}.ts`
         );
+        console.log('ThisTypeSourceFile', thisTypeSourceFile);
         // only generate type file if it does not exist, so that we don't
         // make unnecessary multiple changes to the file
         if (!thisTypeSourceFile) {
@@ -130,9 +132,9 @@ const handleData = (data: any, typeName: string) => {
               }
             }
           });
-          project.save().catch(e => {
-            console.log('Error saving file', e);
-          });
+          // project.save().catch(e => {
+          //   console.log('Error saving file', e);
+          // });
         }
     }
     isRunning = false;
@@ -140,6 +142,12 @@ const handleData = (data: any, typeName: string) => {
       const [typeName, data] = pendingData.entries().next().value;
       pendingData.delete(typeName);
       handleData(data, typeName);
+    } else {
+      console.log('No more pending data');
+      // all pending data has been handled
+      project.save().catch(e => {
+        console.log('Error saving file', e);
+      });
     }
 };
 
