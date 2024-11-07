@@ -27,10 +27,22 @@ function relative(from: string, to: string) {
   
     path += to.substr(current.length);
     return path;
-  }
+}
 
-// @ts-ignore
+const handleDataWrapper = () => {
+  let isRunning = false;
+  const pendingData = new Map<string, any>();
+  // @ts-ignore
 const handleData = (data: any, typeName: string) => {
+  if (isRunning) {
+    console.log('Data is pending ---->', typeName);
+    pendingData.set(typeName, data);
+    return;
+  };
+
+  isRunning = true;
+
+  console.log('Currently running ----->', typeName);
 
   const project = new Project({
       tsConfigFilePath: 'tsconfig.json',
@@ -84,7 +96,8 @@ const handleData = (data: any, typeName: string) => {
                     const pp = prop.getDescendantsOfKind(
                       SyntaxKind.CallExpression
                     );
-                    // @ts-ignore
+                    if (pp.length) {
+                      // @ts-ignore
                     pp.forEach(p => {
                       p.getDescendantsOfKind(SyntaxKind.Identifier).forEach(
                         // @ts-ignore
@@ -110,6 +123,7 @@ const handleData = (data: any, typeName: string) => {
                         }
                       );
                     });
+                    }
                   }
                 });
               }
@@ -120,7 +134,16 @@ const handleData = (data: any, typeName: string) => {
           });
         }
     }
-}
+    isRunning = false;
+    if (pendingData.size) {
+      const [typeName, data] = pendingData.entries().next().value;
+      pendingData.delete(typeName);
+      handleData(data, typeName);
+    }
+};
+
+return (data: any, typeName: string) => handleData(data, typeName);
+};
 
 // @ts-ignore
 export const initialise = async () => {
@@ -130,6 +153,7 @@ export const initialise = async () => {
       // const cors = require('cors');
       const app = express()
       const port = 4000
+      const handler = handleDataWrapper();
   
       app.use(cors({
           origin: 'http://localhost:3000'
@@ -149,7 +173,8 @@ export const initialise = async () => {
       //   console.log('I am here', { req, res });
           // ExerciseApi.getExercises();
           if (req.body.type && req.body.data) {
-            handleData(req.body.data, req.body.type);
+            handler(req.body.data, req.body.type);
+            // handleData(req.body.data, req.body.type);
           }
           res.send(true)
       })

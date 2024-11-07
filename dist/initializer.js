@@ -27,75 +27,96 @@ function relative(from, to) {
     path += to.substr(current.length);
     return path;
 }
-// @ts-ignore
-const handleData = (data, typeName) => {
-    const project = new Project({
-        tsConfigFilePath: 'tsconfig.json',
-    });
-    const config = getConfig();
-    project.getSourceFile(`${config.apiPath}`);
-    const directory = project.createDirectory(`${config.typePath}`);
-    // project.saveSync();
-    console.log('Directory', directory, config);
-    const sourceFiles = project.getSourceFiles(`${config.apiPath}/*.ts`);
-    if (data) {
-        // check if type file exists
-        const thisTypeSourceFile = project.getSourceFile(`${config.apiPath}/${typeName}.ts`);
-        // only generate type file if it does not exist, so that we don't
-        // make unnecessary multiple changes to the file
-        if (!thisTypeSourceFile) {
-            const formattedName = camelcase(typeName, { pascalCase: true });
-            // generate type file
-            generateType(`${typeName}.ts`, data, `${formattedName}`);
-            // get the current working directory
-            let cwd = relative(`${config.apiPath}/${typeName}.ts`, `${config.typePath}/${typeName}.ts`);
-            // remove the .ts extension
-            cwd = cwd.replace('.ts', '');
-            console.log('CWD', cwd);
-            // add import to index.ts
-            // add type to function
-            // @ts-ignore
-            sourceFiles.forEach(sourceFile => {
-                if (sourceFile.getImportDeclaration('axlib')) {
-                    console.log(sourceFile.getBaseName());
-                    const text = sourceFile.getText();
-                    if (text.includes('typedApiWrapper') && text.includes(typeName)) {
-                        const fnDefinition = sourceFile.getDescendantsOfKind(SyntaxKind.ObjectLiteralExpression);
-                        // @ts-ignore
-                        fnDefinition.forEach(fnDef => {
-                            const prop = fnDef.getProperty(typeName);
-                            console.log('Prop', prop?.getText());
-                            if (prop) {
-                                const pp = prop.getDescendantsOfKind(SyntaxKind.CallExpression);
-                                // @ts-ignore
-                                pp.forEach(p => {
-                                    p.getDescendantsOfKind(SyntaxKind.Identifier).forEach(
-                                    // @ts-ignore
-                                    id => {
-                                        const idt = id.getText();
-                                        if (['get', 'post', 'put', 'delete', 'patch'].includes(idt)) {
-                                            p.setExpression(`${p
-                                                .getExpression()
-                                                .getText()
-                                                .replace(idt, `${idt}<{ data: ${formattedName} }>`)}`);
-                                            sourceFile.addImportDeclaration({
-                                                moduleSpecifier: `${cwd}`,
-                                                namedImports: [formattedName],
-                                            });
-                                            // sourceFile.saveSync();
-                                        }
-                                    });
-                                });
-                            }
-                        });
-                    }
-                }
-            });
-            project.save().catch(e => {
-                console.log('Error saving file', e);
-            });
+const handleDataWrapper = () => {
+    let isRunning = false;
+    const pendingData = new Map();
+    // @ts-ignore
+    const handleData = (data, typeName) => {
+        if (isRunning) {
+            console.log('Data is pending ---->', typeName);
+            pendingData.set(typeName, data);
+            return;
         }
-    }
+        ;
+        isRunning = true;
+        console.log('Currently running ----->', typeName);
+        const project = new Project({
+            tsConfigFilePath: 'tsconfig.json',
+        });
+        const config = getConfig();
+        project.getSourceFile(`${config.apiPath}`);
+        const directory = project.createDirectory(`${config.typePath}`);
+        // project.saveSync();
+        console.log('Directory', directory, config);
+        const sourceFiles = project.getSourceFiles(`${config.apiPath}/*.ts`);
+        if (data) {
+            // check if type file exists
+            const thisTypeSourceFile = project.getSourceFile(`${config.apiPath}/${typeName}.ts`);
+            // only generate type file if it does not exist, so that we don't
+            // make unnecessary multiple changes to the file
+            if (!thisTypeSourceFile) {
+                const formattedName = camelcase(typeName, { pascalCase: true });
+                // generate type file
+                generateType(`${typeName}.ts`, data, `${formattedName}`);
+                // get the current working directory
+                let cwd = relative(`${config.apiPath}/${typeName}.ts`, `${config.typePath}/${typeName}.ts`);
+                // remove the .ts extension
+                cwd = cwd.replace('.ts', '');
+                console.log('CWD', cwd);
+                // add import to index.ts
+                // add type to function
+                // @ts-ignore
+                sourceFiles.forEach(sourceFile => {
+                    if (sourceFile.getImportDeclaration('axlib')) {
+                        console.log(sourceFile.getBaseName());
+                        const text = sourceFile.getText();
+                        if (text.includes('typedApiWrapper') && text.includes(typeName)) {
+                            const fnDefinition = sourceFile.getDescendantsOfKind(SyntaxKind.ObjectLiteralExpression);
+                            // @ts-ignore
+                            fnDefinition.forEach(fnDef => {
+                                const prop = fnDef.getProperty(typeName);
+                                console.log('Prop', prop?.getText());
+                                if (prop) {
+                                    const pp = prop.getDescendantsOfKind(SyntaxKind.CallExpression);
+                                    if (pp.length) {
+                                        // @ts-ignore
+                                        pp.forEach(p => {
+                                            p.getDescendantsOfKind(SyntaxKind.Identifier).forEach(
+                                            // @ts-ignore
+                                            id => {
+                                                const idt = id.getText();
+                                                if (['get', 'post', 'put', 'delete', 'patch'].includes(idt)) {
+                                                    p.setExpression(`${p
+                                                        .getExpression()
+                                                        .getText()
+                                                        .replace(idt, `${idt}<{ data: ${formattedName} }>`)}`);
+                                                    sourceFile.addImportDeclaration({
+                                                        moduleSpecifier: `${cwd}`,
+                                                        namedImports: [formattedName],
+                                                    });
+                                                    // sourceFile.saveSync();
+                                                }
+                                            });
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+                project.save().catch(e => {
+                    console.log('Error saving file', e);
+                });
+            }
+        }
+        isRunning = false;
+        if (pendingData.size) {
+            const [typeName, data] = pendingData.entries().next().value;
+            pendingData.delete(typeName);
+            handleData(data, typeName);
+        }
+    };
+    return (data, typeName) => handleData(data, typeName);
 };
 // @ts-ignore
 export const initialise = async () => {
@@ -105,6 +126,7 @@ export const initialise = async () => {
     // const cors = require('cors');
     const app = express();
     const port = 4000;
+    const handler = handleDataWrapper();
     app.use(cors({
         origin: 'http://localhost:3000'
     }));
@@ -121,7 +143,8 @@ export const initialise = async () => {
         //   console.log('I am here', { req, res });
         // ExerciseApi.getExercises();
         if (req.body.type && req.body.data) {
-            handleData(req.body.data, req.body.type);
+            handler(req.body.data, req.body.type);
+            // handleData(req.body.data, req.body.type);
         }
         res.send(true);
     });
