@@ -48,9 +48,9 @@ class HandleDataWrapper {
   handleData(data: any, typeName: string) {
     if (this.isRunning) {
       console.log('Data is pending ---->', typeName, this.pendingData);
-      if (!this.pendingData.has(typeName)) {
+      // if (!this.pendingData.has(typeName)) {
         this.pendingData.set(typeName, data);
-      }
+      // }
       return;
     };
 
@@ -128,7 +128,7 @@ class HandleDataWrapper {
                               moduleSpecifier: `${cwd}`,
                               namedImports: [formattedName],
                             });
-                            // sourceFile.saveSync();
+                            sourceFile.saveSync();
                           }
                         }
                       );
@@ -149,7 +149,7 @@ class HandleDataWrapper {
     } else {
       console.log('No more pending data');
       // all pending data has been handled
-      this.project.saveSync();
+      // this.project.saveSync();
     }
   };
 };
