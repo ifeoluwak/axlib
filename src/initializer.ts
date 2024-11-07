@@ -36,11 +36,11 @@ const handleData = (data: any, typeName: string) => {
       tsConfigFilePath: 'tsconfig.json',
     });
 
-    const config = getConfig();
+  const config = getConfig();
   
   project.getSourceFile(`${config.apiPath}`);
   const directory = project.createDirectory(`${config.typePath}`);
-  project.saveSync();
+  // project.saveSync();
   console.log('Directory', directory, config);
   
   const sourceFiles = project.getSourceFiles(`${config.apiPath}/*.ts`);
@@ -119,7 +119,7 @@ const handleData = (data: any, typeName: string) => {
             console.log('Error saving file', e);
           });
         }
-      }
+    }
 }
 
 // @ts-ignore

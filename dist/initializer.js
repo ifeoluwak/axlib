@@ -35,7 +35,7 @@ const handleData = (data, typeName) => {
     const config = getConfig();
     project.getSourceFile(`${config.apiPath}`);
     const directory = project.createDirectory(`${config.typePath}`);
-    project.saveSync();
+    // project.saveSync();
     console.log('Directory', directory, config);
     const sourceFiles = project.getSourceFiles(`${config.apiPath}/*.ts`);
     if (data) {

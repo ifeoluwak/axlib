@@ -6,7 +6,7 @@ export const getConfig = () => {
     const pjson = JSON.parse(packageJsonContent);
     let axlib = pjson?.axlib || {};
     axlib.objectType = axlib.objectType || 'interface';
-    axlib.typePath = axlib.typePath || 'types';
-    axlib.apiPath = axlib.apiPath || 'api';
+    axlib.typePath = axlib.typePath || 'src/types';
+    axlib.apiPath = axlib.apiPath || 'src/api';
     return axlib;
 };
