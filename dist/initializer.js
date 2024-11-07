@@ -46,7 +46,7 @@ class HandleDataWrapper {
             tsConfigFilePath: 'tsconfig.json',
         });
         this.config = getConfig();
-        greenLog("Type Generation Service Started");
+        console.log(chalk.green("Type Generation Service Started"));
     }
     // @ts-ignore
     handleData(data, typeName) {
@@ -143,7 +143,7 @@ export const initialise = async () => {
     });
     app.options('*', cors());
     app.post('/', (req, res) => {
-        console.log('Inside express', Object.keys(req.body));
+        // console.log('Inside express', Object.keys(req.body));
         if (req.body.type && req.body.data) {
             throttled(req.body.data, req.body.type);
         }
