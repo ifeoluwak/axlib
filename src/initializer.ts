@@ -33,6 +33,7 @@ class HandleDataWrapper {
   isRunning: boolean;
   pendingData: Map<string, any>;
   project: Project;
+  config: { objectType: "interface" | "type"; typePath: string; apiPath: string; };
 
   constructor() {
     this.isRunning = false;
@@ -40,12 +41,13 @@ class HandleDataWrapper {
     this.project = new Project({
       tsConfigFilePath: 'tsconfig.json',
     });
+    this.config = getConfig();
     console.log("Initialising handleDataWrapper", this.pendingData, this.isRunning);
   }
   // @ts-ignore
   handleData(data: any, typeName: string) {
     if (this.isRunning) {
-      console.log('Data is pending ---->', typeName);
+      console.log('Data is pending ---->', typeName, this.pendingData);
       this.pendingData.set(typeName, data);
       return;
     };
@@ -54,19 +56,18 @@ class HandleDataWrapper {
 
     console.log('Currently running ----->', typeName);
 
-    const config = getConfig();
     
-    this.project.getSourceFile(`${config.apiPath}`);
-    const directory = this.project.createDirectory(`${config.typePath}`);
+    this.project.getDirectoryOrThrow(`${this.config.apiPath}`);
+    this.project.getDirectoryOrThrow(`${this.config.typePath}`);
     // project.saveSync();
-    console.log('Directory', directory, config);
+    // console.log('Config', this.config);
     
-    const sourceFiles = this.project.getSourceFiles(`${config.apiPath}/*.ts`);
+    const sourceFiles = this.project.getSourceFile(`${this.config.apiPath}/*.ts`);
 
     if (data) {
         // check if type file exists
         const thisTypeSourceFile = this.project.getSourceFile(
-          `${config.apiPath}/${typeName}.ts`
+          `${this.config.apiPath}/${typeName}.ts`
         );
         console.log('ThisTypeSourceFile', thisTypeSourceFile);
         // only generate type file if it does not exist, so that we don't
@@ -77,8 +78,8 @@ class HandleDataWrapper {
           generateType(`${typeName}.ts`, data, `${formattedName}`);
           // get the current working directory
           let cwd = relative(
-            `${config.apiPath}/${typeName}.ts`,
-            `${config.typePath}/${typeName}.ts`
+            `${this.config.apiPath}/${typeName}.ts`,
+            `${this.config.typePath}/${typeName}.ts`
           );
           // remove the .ts extension
           cwd = cwd.replace('.ts', '');
@@ -149,7 +150,6 @@ class HandleDataWrapper {
       this.project.saveSync();
     }
   };
-// return (data: any, typeName: string) => handleData(data, typeName);
 };
 
 // @ts-ignore

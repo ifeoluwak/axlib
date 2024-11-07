@@ -31,33 +31,34 @@ class HandleDataWrapper {
     isRunning;
     pendingData;
     project;
+    config;
     constructor() {
         this.isRunning = false;
         this.pendingData = new Map();
         this.project = new Project({
             tsConfigFilePath: 'tsconfig.json',
         });
+        this.config = getConfig();
         console.log("Initialising handleDataWrapper", this.pendingData, this.isRunning);
     }
     // @ts-ignore
     handleData(data, typeName) {
         if (this.isRunning) {
-            console.log('Data is pending ---->', typeName);
+            console.log('Data is pending ---->', typeName, this.pendingData);
             this.pendingData.set(typeName, data);
             return;
         }
         ;
         this.isRunning = true;
         console.log('Currently running ----->', typeName);
-        const config = getConfig();
-        this.project.getSourceFile(`${config.apiPath}`);
-        const directory = this.project.createDirectory(`${config.typePath}`);
+        this.project.getDirectoryOrThrow(`${this.config.apiPath}`);
+        this.project.getDirectoryOrThrow(`${this.config.typePath}`);
         // project.saveSync();
-        console.log('Directory', directory, config);
-        const sourceFiles = this.project.getSourceFiles(`${config.apiPath}/*.ts`);
+        // console.log('Config', this.config);
+        const sourceFiles = this.project.getSourceFile(`${this.config.apiPath}/*.ts`);
         if (data) {
             // check if type file exists
-            const thisTypeSourceFile = this.project.getSourceFile(`${config.apiPath}/${typeName}.ts`);
+            const thisTypeSourceFile = this.project.getSourceFile(`${this.config.apiPath}/${typeName}.ts`);
             console.log('ThisTypeSourceFile', thisTypeSourceFile);
             // only generate type file if it does not exist, so that we don't
             // make unnecessary multiple changes to the file
@@ -66,7 +67,7 @@ class HandleDataWrapper {
                 // generate type file
                 generateType(`${typeName}.ts`, data, `${formattedName}`);
                 // get the current working directory
-                let cwd = relative(`${config.apiPath}/${typeName}.ts`, `${config.typePath}/${typeName}.ts`);
+                let cwd = relative(`${this.config.apiPath}/${typeName}.ts`, `${this.config.typePath}/${typeName}.ts`);
                 // remove the .ts extension
                 cwd = cwd.replace('.ts', '');
                 console.log('CWD', cwd);
