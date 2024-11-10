@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 
-type Config = {
+export type Config = {
   objectType: 'interface' | 'type';
+  fetchType: 'fetch' | 'axios';
   typePath: string;
   apiPath: string;
 };
@@ -17,5 +18,6 @@ export const getConfig = (): Config => {
   axlib.objectType = axlib.objectType || 'interface';
   axlib.typePath = axlib.typePath || 'src/types';
   axlib.apiPath = axlib.apiPath || 'src/api';
+  axlib.fetchType = axlib.fetchType || 'fetch';
   return axlib;
 };

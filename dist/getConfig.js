@@ -8,5 +8,6 @@ export const getConfig = () => {
     axlib.objectType = axlib.objectType || 'interface';
     axlib.typePath = axlib.typePath || 'src/types';
     axlib.apiPath = axlib.apiPath || 'src/api';
+    axlib.fetchType = axlib.fetchType || 'fetch';
     return axlib;
 };
