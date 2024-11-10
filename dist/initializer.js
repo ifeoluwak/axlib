@@ -49,7 +49,7 @@ class HandleDataWrapper {
         console.log(chalk.green("Type Generation Service Started"));
     }
     // @ts-ignore
-    handleData(data, typeName, fnStatement) {
+    handleData(data, typeName) {
         const project = new Project({
             tsConfigFilePath: 'tsconfig.json',
         });
@@ -79,13 +79,6 @@ class HandleDataWrapper {
                 // add type to function
                 // @ts-ignore
                 sourceFiles.forEach(sourceFile => {
-                    sourceFile.getStatement((s) => {
-                        if (s.getFullText().includes(typeName)) {
-                            console.log('Statement', s.getFullText());
-                            console.log('FnStatement', fnStatement);
-                        }
-                        return false;
-                    });
                     if (sourceFile.getImportDeclaration('axlib')) {
                         // console.log(sourceFile.getBaseName());
                         const text = sourceFile.getText();
@@ -116,6 +109,16 @@ class HandleDataWrapper {
                                                     spinner.succeed(greenLog(`Type added to ${typeName} in -> `) + chalk.dim.underline(`${this.config.apiPath}/${typeName}.ts\n`));
                                                     sourceFile.saveSync();
                                                 }
+                                                else if (idt === 'fetch') {
+                                                    if (prop.isKind(SyntaxKind.MethodDeclaration)) {
+                                                        prop.setReturnType(`Promise<{ data: ${formattedName} }>`);
+                                                    }
+                                                    else {
+                                                        prop.getDescendantsOfKind(SyntaxKind.ArrowFunction).forEach(z => {
+                                                            z.setReturnType(`Promise<{ data: ${formattedName} }>`);
+                                                        });
+                                                    }
+                                                }
                                             });
                                         });
                                     }
@@ -137,7 +140,7 @@ export const initialise = async () => {
     const app = express();
     const port = 4000;
     const handler = new HandleDataWrapper();
-    const throttled = throttle((d, t, s) => handler.handleData(d, t, s), 1500);
+    const throttled = throttle((d, t) => handler.handleData(d, t), 1500);
     app.use(cors({
         origin: 'http://localhost:3000'
     }));
@@ -151,7 +154,7 @@ export const initialise = async () => {
     app.post('/', (req, res) => {
         // console.log('Inside express', Object.keys(req.body));
         if (req.body.type && req.body.data) {
-            throttled(req.body.data, req.body.type, req.body.fnStatement);
+            throttled(req.body.data, req.body.type);
         }
         res.send(true);
     });
