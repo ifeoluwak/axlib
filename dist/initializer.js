@@ -48,13 +48,11 @@ class HandleDataWrapper {
         this.config = getConfig();
         console.log(chalk.green('Type Generation Service Started'));
     }
-    // @ts-ignore
     handleData(data, typeName) {
         const project = new Project({
             tsConfigFilePath: 'tsconfig.json',
         });
         this.isRunning = true;
-        // console.log('Currently running ----->', typeName, this.isRunning, Date());
         project.getDirectoryOrThrow(`${this.config.apiPath}`);
         project.getDirectoryOrThrow(`${this.config.typePath}`);
         const sourceFiles = project.getSourceFiles(`${this.config.apiPath}/*.ts`);
@@ -78,62 +76,32 @@ class HandleDataWrapper {
                 sourceFiles.forEach((sourceFile) => {
                     if (sourceFile.getImportDeclaration('axlib')) {
                         const text = sourceFile.getText();
-                        if (text && text.includes('typedApiWrapper') && text.includes(typeName)) {
+                        if (text &&
+                            text.includes('typedApiWrapper') &&
+                            text.includes(typeName)) {
                             const thisFunction = sourceFile
                                 .getDescendantsOfKind(SyntaxKind.MethodDeclaration || SyntaxKind.PropertyAssignment)
                                 .find((fnDef) => fnDef.getName() === typeName);
                             if (thisFunction) {
-                                if (this.config.fetchType === 'fetch') {
-                                    if (thisFunction.isKind(SyntaxKind.MethodDeclaration)) {
-                                        thisFunction.setReturnType(`Promise<{ data: ${formattedName} }>`);
-                                        sourceFile.addImportDeclaration({
-                                            moduleSpecifier: `${cwd}`,
-                                            namedImports: [formattedName],
-                                        });
-                                        spinner.succeed(greenLog(`Type added to ${typeName} in -> `) +
-                                            chalk.dim.underline(`${this.config.apiPath}/${typeName}.ts\n`));
-                                        sourceFile.saveSync();
-                                    }
-                                    else {
-                                        thisFunction
-                                            .getFirstDescendantByKind(SyntaxKind.ArrowFunction)
-                                            .setReturnType(`Promise<{ data: ${formattedName} }>`);
-                                        sourceFile.addImportDeclaration({
-                                            moduleSpecifier: `${cwd}`,
-                                            namedImports: [formattedName],
-                                        });
-                                        spinner.succeed(greenLog(`Type added to ${typeName} in -> `) +
-                                            chalk.dim.underline(`${this.config.apiPath}/${typeName}.ts\n`));
-                                        sourceFile.saveSync();
-                                    }
+                                let success = false;
+                                if (thisFunction.isKind(SyntaxKind.MethodDeclaration)) {
+                                    thisFunction.setReturnType(`Promise<{ data: ${formattedName} }>`);
+                                    success = true;
                                 }
                                 else {
-                                    // for axios
-                                    const axiosIdentifiers = [
-                                        'get',
-                                        'post',
-                                        'put',
-                                        'delete',
-                                        'patch',
-                                    ];
-                                    const pp = thisFunction.getFirstDescendantByKind(SyntaxKind.CallExpression);
-                                    const identifier = pp
-                                        .getDescendantsOfKind(SyntaxKind.Identifier)
-                                        .find((id) => axiosIdentifiers.includes(id.getText()));
-                                    if (identifier) {
-                                        const idt = identifier.getText();
-                                        pp.setExpression(`${pp
-                                            .getExpression()
-                                            .getText()
-                                            .replace(idt, `${idt}<{ data: ${formattedName} }>`)}`);
-                                        sourceFile.addImportDeclaration({
-                                            moduleSpecifier: `${cwd}`,
-                                            namedImports: [formattedName],
-                                        });
-                                        spinner.succeed(greenLog(`Type added to ${typeName} in -> `) +
-                                            chalk.dim.underline(`${this.config.apiPath}/${typeName}.ts\n`));
-                                        sourceFile.saveSync();
-                                    }
+                                    thisFunction
+                                        .getFirstDescendantByKind(SyntaxKind.ArrowFunction)
+                                        .setReturnType(`Promise<{ data: ${formattedName} }>`);
+                                    success = true;
+                                }
+                                if (success) {
+                                    sourceFile.addImportDeclaration({
+                                        moduleSpecifier: `${cwd}`,
+                                        namedImports: [formattedName],
+                                    });
+                                    spinner.succeed(greenLog(`Type added to ${typeName} in -> `) +
+                                        chalk.dim.underline(`${this.config.apiPath}/${typeName}.ts\n`));
+                                    sourceFile.saveSync();
                                 }
                             }
                         }
@@ -145,9 +113,7 @@ class HandleDataWrapper {
         this.isRunning = false;
     }
 }
-// @ts-ignore
 export const initialise = async () => {
-    // console.log('Initialising... express app');;
     const app = express();
     const port = 4000;
     const handler = new HandleDataWrapper();
@@ -163,7 +129,6 @@ export const initialise = async () => {
     });
     app.options('*', cors());
     app.post('/', (req, res) => {
-        // console.log('Inside express', Object.keys(req.body));
         if (req.body.type && req.body.data) {
             throttled(req.body.data, req.body.type);
         }
