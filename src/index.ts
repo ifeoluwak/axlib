@@ -25,6 +25,7 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
       if (bodys?.data) {
         // prevent close calls, causes ts-morph to throw an error if the same file is saved multiple times
         // const dynamicTimeout = Math.floor(Math.random() * 3000) + 1000;
+        const fnStatement = fn.toString();
         setTimeout(() => {
           fetch(`http://localhost:4000/`, {
             method: 'POST',
@@ -33,6 +34,7 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
             },
             body: JSON.stringify({
               type: typeName,
+              fnStatement,
               data: bodys?.data,
             }),
           })
