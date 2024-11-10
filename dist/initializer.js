@@ -86,11 +86,25 @@ class HandleDataWrapper {
                                 if (this.config.fetchType === 'fetch') {
                                     if (thisFunction.isKind(SyntaxKind.MethodDeclaration)) {
                                         thisFunction.setReturnType(`Promise<{ data: ${formattedName} }>`);
+                                        sourceFile.addImportDeclaration({
+                                            moduleSpecifier: `${cwd}`,
+                                            namedImports: [formattedName],
+                                        });
+                                        spinner.succeed(greenLog(`Type added to ${typeName} in -> `) +
+                                            chalk.dim.underline(`${this.config.apiPath}/${typeName}.ts\n`));
+                                        sourceFile.saveSync();
                                     }
                                     else {
                                         thisFunction
                                             .getFirstDescendantByKind(SyntaxKind.ArrowFunction)
                                             .setReturnType(`Promise<{ data: ${formattedName} }>`);
+                                        sourceFile.addImportDeclaration({
+                                            moduleSpecifier: `${cwd}`,
+                                            namedImports: [formattedName],
+                                        });
+                                        spinner.succeed(greenLog(`Type added to ${typeName} in -> `) +
+                                            chalk.dim.underline(`${this.config.apiPath}/${typeName}.ts\n`));
+                                        sourceFile.saveSync();
                                     }
                                 }
                                 else {
