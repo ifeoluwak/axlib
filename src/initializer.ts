@@ -100,37 +100,57 @@ class HandleDataWrapper {
               text.includes('typedApiWrapper') &&
               text.includes(typeName)
             ) {
-              const thisFunction = sourceFile
-                .getDescendantsOfKind(
-                  SyntaxKind.MethodDeclaration || SyntaxKind.PropertyAssignment
-                )
+              const method = sourceFile
+                .getDescendantsOfKind(SyntaxKind.MethodDeclaration)
                 .find((fnDef) => fnDef.getName() === typeName);
-              if (thisFunction) {
-                let success = false;
-                if (thisFunction.isKind(SyntaxKind.MethodDeclaration)) {
-                  thisFunction.setReturnType(
-                    `Promise<{ data: ${formattedName} }>`
-                  );
-                  success = true;
-                } else {
-                  thisFunction
-                    .getFirstDescendantByKind(SyntaxKind.ArrowFunction)
-                    .setReturnType(`Promise<{ data: ${formattedName} }>`);
-                    success = true;
-                }
-                if (success) {
-                    sourceFile.addImportDeclaration({
-                        moduleSpecifier: `${cwd}`,
-                        namedImports: [formattedName],
+
+              const properties = sourceFile.getDescendantsOfKind(
+                SyntaxKind.PropertyAssignment
+              );
+
+              let success = false;
+
+              if (method) {
+                method.setReturnType(`Promise<{ data: ${formattedName} }>`);
+                success = true;
+              } else {
+                properties.forEach((prop) => {
+                  prop
+                    .getDescendantsOfKind(SyntaxKind.Identifier)
+                    .forEach((id) => {
+                      console.log('the property', id.getText());
+                      if (id.getText() === typeName) {
+                        const arrowFunc = prop.getFirstDescendantByKind(
+                          SyntaxKind.ArrowFunction
+                        );
+                        if (arrowFunc) {
+                          arrowFunc.setReturnType(
+                            `Promise<{ data: ${formattedName} }>`
+                          );
+                          success = true;
+                        }
+                      }
                     });
-                    spinner.succeed(
-                    greenLog(`Type added to ${typeName} in -> `) +
-                        chalk.dim.underline(
-                        `${this.config.apiPath}/${typeName}.ts\n`
-                        )
-                    );
-                    sourceFile.saveSync();
-                }
+                });
+              }
+              if (success) {
+                sourceFile.addImportDeclaration({
+                  moduleSpecifier: `${cwd}`,
+                  namedImports: [formattedName],
+                });
+                spinner.succeed(
+                  greenLog(`Type added to ${typeName} in -> `) +
+                    chalk.dim.underline(
+                      `${this.config.apiPath}/${typeName}.ts\n`
+                    )
+                );
+                sourceFile.saveSync();
+              } else {
+                spinner.fail(
+                  chalk.red(
+                    `Could not add type to ${typeName} in -> ${this.config.apiPath}/${typeName}.ts\n`
+                  )
+                );
               }
             }
           }
