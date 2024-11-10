@@ -10,9 +10,10 @@ export const typedApi = (fn) => {
     // @ts-ignore
     return async (args) => {
         const typeName = fn.name;
-        console.log('XYZZZZZ \n\n\n\n\n\n\n\n\n\n\n', typeName, args);
+        console.log('XYZZZZZ \n\n\n', typeName, args);
         try {
             const bodys = await fn(args);
+            console.log('QQQQQQQQQQ \n', bodys);
             if (bodys?.data) {
                 // prevent close calls, causes ts-morph to throw an error if the same file is saved multiple times
                 // const dynamicTimeout = Math.floor(Math.random() * 3000) + 1000;
