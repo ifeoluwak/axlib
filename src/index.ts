@@ -23,7 +23,7 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
     try {
       const bodys = await fn(args);
       console.log('QQQQQQQQQQ \n', bodys);
-      if (bodys?.data) {
+      if (bodys) {
         // prevent close calls, causes ts-morph to throw an error if the same file is saved multiple times
         // const dynamicTimeout = Math.floor(Math.random() * 3000) + 1000;
         setTimeout(() => {
@@ -34,7 +34,7 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
             },
             body: JSON.stringify({
               type: typeName,
-              data: bodys?.data,
+              data: bodys?.data || bodys,
             }),
           })
         }, 1000);
