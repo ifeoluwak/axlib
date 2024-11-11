@@ -1,12 +1,12 @@
-type FunctionType<T> = (...args: any[]) => Promise<{ data: T }>;
+type FunctionType<T, U> = (...args: U[]) => Promise<T>;
 
-type ObjectType<T> = {
-  [key in keyof T]: FunctionType<T[key]>;
+type ObjectType<T, U> = {
+  [key in keyof T]: FunctionType<T[key], U>;
 };
 
 
-export const typedApiWrapper = <T>(obj: ObjectType<T>) => {
-  let newObj: ObjectType<T> = {} as ObjectType<T>;
+export const typedApiWrapper = <T, U>(obj: ObjectType<T, U>) => {
+  let newObj: ObjectType<T, U> = {} as ObjectType<T, U>;
   for (const key in obj) {
     // @ts-ignore
     newObj[key] = typedApi(obj[key]);
@@ -14,16 +14,17 @@ export const typedApiWrapper = <T>(obj: ObjectType<T>) => {
   return newObj;
 };
 
-export const typedApi = <T>(fn: FunctionType<T>) => {
+export const typedApi = <T, U>(fn: FunctionType<T, U>) => {
   // @ts-ignore
-  return async (args: any) => {
+  return async (args: U) => {
     const typeName = fn.name;
+
+    let data;
 
     try {
       const bodys = await fn(args);
       if (bodys) {
         // prevent close calls, causes ts-morph to throw an error if the same file is saved multiple times
-        let data;
         if (bodys instanceof Promise) {
             // @ts-ignore
             data = await bodys?.json();
@@ -44,10 +45,10 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
           }, 1000);
         
       }
-      return bodys;
+      return data;
     } catch (error) {
-      console.log('\n\n\nError\n\n\n\n', error);
       return error;
     }
   };
 };
+

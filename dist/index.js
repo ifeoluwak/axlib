@@ -10,11 +10,11 @@ export const typedApi = (fn) => {
     // @ts-ignore
     return async (args) => {
         const typeName = fn.name;
+        let data;
         try {
             const bodys = await fn(args);
             if (bodys) {
                 // prevent close calls, causes ts-morph to throw an error if the same file is saved multiple times
-                let data;
                 if (bodys instanceof Promise) {
                     // @ts-ignore
                     data = await bodys?.json();
@@ -35,10 +35,9 @@ export const typedApi = (fn) => {
                     });
                 }, 1000);
             }
-            return bodys;
+            return data;
         }
         catch (error) {
-            console.log('\n\n\nError\n\n\n\n', error);
             return error;
         }
     };

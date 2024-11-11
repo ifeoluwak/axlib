@@ -1,9 +1,7 @@
-type FunctionType<T> = (...args: any[]) => Promise<{
-    data: T;
-}>;
-type ObjectType<T> = {
-    [key in keyof T]: FunctionType<T[key]>;
+type FunctionType<T, U> = (...args: U[]) => Promise<T>;
+type ObjectType<T, U> = {
+    [key in keyof T]: FunctionType<T[key], U>;
 };
-export declare const typedApiWrapper: <T>(obj: ObjectType<T>) => ObjectType<T>;
-export declare const typedApi: <T>(fn: FunctionType<T>) => (args: any) => Promise<any>;
+export declare const typedApiWrapper: <T, U>(obj: ObjectType<T, U>) => ObjectType<T, U>;
+export declare const typedApi: <T, U>(fn: FunctionType<T, U>) => (args: U) => Promise<any>;
 export {};
