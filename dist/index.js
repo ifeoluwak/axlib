@@ -20,6 +20,7 @@ export const typedApi = (fn) => {
                     data = await bodys?.json();
                 }
                 else {
+                    // @ts-ignore
                     data = bodys?.data || bodys;
                 }
                 setTimeout(() => {

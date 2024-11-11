@@ -29,6 +29,7 @@ export const typedApi = <T, U>(fn: FunctionType<T, U>) => {
             // @ts-ignore
             data = await bodys?.json();
         } else {
+            // @ts-ignore
             data = bodys?.data || bodys;
         }
         setTimeout(() => {
