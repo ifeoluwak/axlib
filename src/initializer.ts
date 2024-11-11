@@ -64,7 +64,7 @@ class HandleDataWrapper {
 
     const sourceFiles = project.getSourceFiles(`${this.config.apiPath}/*.ts`);
     if (data) {
-      spinner.start(`Generating ${this.config.objectType} for ${typeName}`);
+      spinner.start(`Generating ${this.config.objectType} for ${typeName}\n`);
       // check if type file exists
       const thisTypeSourceFile = project.getSourceFile(
         `${this.config.typePath}/${typeName}.ts`
@@ -78,7 +78,7 @@ class HandleDataWrapper {
 
         spinner.succeed(
           greenLog(`${formattedName} type generated. `) +
-            chalk.dim.underline(`See -> ${this.config.typePath}/${typeName}.ts`)
+            chalk.dim.underline(`See -> ${this.config.typePath}/${typeName}.ts\n`)
         );
         spinner.start(
           `Adding ${this.config.objectType} to ${typeName} in ${this.config.apiPath}/${typeName}.ts`
@@ -118,7 +118,6 @@ class HandleDataWrapper {
                   prop
                     .getDescendantsOfKind(SyntaxKind.Identifier)
                     .forEach((id) => {
-                      console.log('the property', id.getText());
                       if (id.getText() === typeName) {
                         const arrowFunc = prop.getFirstDescendantByKind(
                           SyntaxKind.ArrowFunction

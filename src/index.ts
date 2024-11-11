@@ -22,22 +22,28 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
 
     try {
       const bodys = await fn(args);
-      console.log('QQQQQQQQQQ \n', bodys);
       if (bodys) {
         // prevent close calls, causes ts-morph to throw an error if the same file is saved multiple times
-        // const dynamicTimeout = Math.floor(Math.random() * 3000) + 1000;
+        let data;
+        if (bodys instanceof Promise) {
+            // @ts-ignore
+            data = await bodys?.json();
+        } else {
+            data = bodys?.data || bodys;
+        }
         setTimeout(() => {
-          fetch(`http://localhost:4000/`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              type: typeName,
-              data: bodys?.data || bodys,
-            }),
-          })
-        }, 1000);
+            fetch(`http://localhost:4000/`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                type: typeName,
+                data: data,
+              }),
+            })
+          }, 1000);
+        
       }
       return bodys;
     } catch (error) {
