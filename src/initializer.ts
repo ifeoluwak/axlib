@@ -12,9 +12,7 @@ import ora from 'ora';
 
 const greenLog = chalk.green;
 
-const spinner = ora({
-  text: 'Loading',
-});
+const spinner = ora();
 
 function relative(from: string, to: string) {
   if (!from || !to) throw new Error('Invalid or empty paths');
@@ -168,14 +166,9 @@ export const initialise = async () => {
 
   const throttled = throttle((d, t) => handler.handleData(d, t), 1500);
 
-  app.use(
-    cors({
-      origin: 'http://localhost:3000',
-    })
-  );
+  app.use(cors());
   app.use(bodyParser.json());
   app.use(function (_, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000'); // update to match the domain you will make the request from
     res.header(
       'Access-Control-Allow-Headers',
       'Origin, X-Requested-With, Content-Type, Accept'
@@ -193,6 +186,6 @@ export const initialise = async () => {
   });
 
   app.listen(port, () => {
-    // console.log(`Example app listening on port ${port}`)
+    console.log(chalk.gray(`Generation Service running on port ${port}`))
   });
 };

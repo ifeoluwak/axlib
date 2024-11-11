@@ -18,7 +18,6 @@ export const typedApi = <T>(fn: FunctionType<T>) => {
   // @ts-ignore
   return async (args: any) => {
     const typeName = fn.name;
-    console.log('XYZZZZZ \n\n\n', typeName, args);
 
     try {
       const bodys = await fn(args);

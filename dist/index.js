@@ -10,7 +10,6 @@ export const typedApi = (fn) => {
     // @ts-ignore
     return async (args) => {
         const typeName = fn.name;
-        console.log('XYZZZZZ \n\n\n', typeName, args);
         try {
             const bodys = await fn(args);
             if (bodys) {
@@ -31,7 +30,7 @@ export const typedApi = (fn) => {
                         },
                         body: JSON.stringify({
                             type: typeName,
-                            data: bodys?.data || bodys,
+                            data: data,
                         }),
                     });
                 }, 1000);

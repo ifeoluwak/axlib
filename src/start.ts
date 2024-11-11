@@ -6,6 +6,5 @@ import { initialise } from "./initializer.js";
 const argv = yargs(process.argv.slice(2)).parse()
 
 if (argv.init) {
-  // console.log('got here... express app');
   initialise();
 }
