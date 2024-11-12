@@ -8,17 +8,16 @@ type ObjectType<T, U extends Parameters<any>> = {
 export const typedApiWrapper = <T, U extends Parameters<any>>(obj: ObjectType<T, U>) => {
   let newObj: ObjectType<T, U> = {} as ObjectType<T, U>;
   for (const key in obj) {
-    // @ts-ignore
-    newObj[key] = typedApi(obj[key]);
+    if (typeof obj[key] === 'function') {
+      newObj[key] = typedApi(obj[key]);
+    } else {
+      newObj[key] = obj[key];
+    }
   }
   return newObj;
 };
 
 export const typedApi = <T, U extends Parameters<any>>(fn: FunctionType<T, U>) => {
-  if (typeof fn !== 'function') {
-    return fn;
-  }
-  // @ts-ignore
   return async (...args: U) => {
     const typeName = fn.name;
 
@@ -27,7 +26,6 @@ export const typedApi = <T, U extends Parameters<any>>(fn: FunctionType<T, U>) =
     try {
       const bodys = await fn(...args);
       if (bodys) {
-        // prevent close calls, causes ts-morph to throw an error if the same file is saved multiple times
         if (bodys instanceof Promise) {
             // @ts-ignore
             data = await bodys?.json();
@@ -55,12 +53,3 @@ export const typedApi = <T, U extends Parameters<any>>(fn: FunctionType<T, U>) =
     }
   };
 };
-
-
-
-
-// const getExerciseById = (id: string, age: number) => fetch(`https://wger.de/api/v2/exercise/${id}/${age}`)
-
-// const ghj = typedApi(getExerciseById);
-
-// ghj('23', 23).then(console.log)

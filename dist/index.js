@@ -1,23 +1,22 @@
 export const typedApiWrapper = (obj) => {
     let newObj = {};
     for (const key in obj) {
-        // @ts-ignore
-        newObj[key] = typedApi(obj[key]);
+        if (typeof obj[key] === 'function') {
+            newObj[key] = typedApi(obj[key]);
+        }
+        else {
+            newObj[key] = obj[key];
+        }
     }
     return newObj;
 };
 export const typedApi = (fn) => {
-    if (typeof fn !== 'function') {
-        return fn;
-    }
-    // @ts-ignore
     return async (...args) => {
         const typeName = fn.name;
         let data;
         try {
             const bodys = await fn(...args);
             if (bodys) {
-                // prevent close calls, causes ts-morph to throw an error if the same file is saved multiple times
                 if (bodys instanceof Promise) {
                     // @ts-ignore
                     data = await bodys?.json();
@@ -46,6 +45,3 @@ export const typedApi = (fn) => {
         }
     };
 };
-// const getExerciseById = (id: string, age: number) => fetch(`https://wger.de/api/v2/exercise/${id}/${age}`)
-// const ghj = typedApi(getExerciseById);
-// ghj('23', 23).then(console.log)
