@@ -1,12 +1,12 @@
-type FunctionType<T, U extends Parameters<any>> = (...args: U) => Promise<T>;
+type FunctionType<T> = (...args: any[]) => Promise<T>;
 
-type ObjectType<T, U extends Parameters<any>> = {
-  [key in keyof T]: FunctionType<T[key], U>;
+type ObjectType<T> = {
+  [key in keyof T]: FunctionType<T[key]>;
 };
 
 
-export const typedApiWrapper = <T, U extends Parameters<any>>(obj: ObjectType<T, U>) => {
-  let newObj: ObjectType<T, U> = {} as ObjectType<T, U>;
+export const typedApiWrapper = <T>(obj: ObjectType<T>) => {
+  let newObj: ObjectType<T> = {} as ObjectType<T>;
   for (const key in obj) {
     if (typeof obj[key] === 'function') {
       newObj[key] = typedApi(obj[key]);
@@ -17,8 +17,8 @@ export const typedApiWrapper = <T, U extends Parameters<any>>(obj: ObjectType<T,
   return newObj;
 };
 
-export const typedApi = <T, U extends Parameters<any>>(fn: FunctionType<T, U>) => {
-  return async (...args: U) => {
+export const typedApi = <T>(fn: FunctionType<T>) => {
+  return async (...args: any[]) => {
     const typeName = fn.name;
 
     let data;
@@ -53,3 +53,4 @@ export const typedApi = <T, U extends Parameters<any>>(fn: FunctionType<T, U>) =
     }
   };
 };
+
