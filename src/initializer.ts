@@ -113,7 +113,7 @@ class HandleDataWrapper {
               if (method) {
                 method.setReturnType(
                   this.config.fetchType === 'axios'
-                    ? `Promise<{ data: ${formattedName} >>`
+                    ? `Promise<{ data: ${formattedName} }>>`
                     : `Promise<${formattedName}>`
                 );
                 success = true;
@@ -129,8 +129,8 @@ class HandleDataWrapper {
                         if (arrowFunc) {
                           arrowFunc.setReturnType(
                             this.config.fetchType === 'axios'
-                              ? `Promise<${formattedName}>`
-                              : `Promise<{ data: ${formattedName} }>`
+                              ? `Promise<{ data: ${formattedName} }>>`
+                              : `Promise<${formattedName}>`
                           );
                           success = true;
                         }
