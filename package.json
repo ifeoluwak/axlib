@@ -16,6 +16,12 @@
   "author": "Ifeoluwa King <ifeoluwaking24@gmail.com>",
   "module": "dist/index.js",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
   "devDependencies": {
     "@types/node": "^22.9.0",
     "husky": "^9.1.6",
