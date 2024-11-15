@@ -76,7 +76,9 @@ class HandleDataWrapper {
 
         spinner.succeed(
           greenLog(`${formattedName} type generated. `) +
-            chalk.dim.underline(`See -> ${this.config.typePath}/${typeName}.ts\n`)
+            chalk.dim.underline(
+              `See -> ${this.config.typePath}/${typeName}.ts\n`
+            )
         );
         spinner.start(
           `Adding ${this.config.objectType} to ${typeName} in ${this.config.apiPath}/${typeName}.ts`
@@ -109,7 +111,11 @@ class HandleDataWrapper {
               let success = false;
 
               if (method) {
-                method.setReturnType(`Promise<{ data: ${formattedName} }>`);
+                method.setReturnType(
+                  this.config.fetchType === 'axios'
+                    ? `Promise<{ data: ${formattedName} >>`
+                    : `Promise<${formattedName}>`
+                );
                 success = true;
               } else {
                 properties.forEach((prop) => {
@@ -122,7 +128,9 @@ class HandleDataWrapper {
                         );
                         if (arrowFunc) {
                           arrowFunc.setReturnType(
-                            `Promise<{ data: ${formattedName} }>`
+                            this.config.fetchType === 'axios'
+                              ? `Promise<${formattedName}>`
+                              : `Promise<{ data: ${formattedName} }>`
                           );
                           success = true;
                         }
@@ -186,6 +194,6 @@ export const initialise = async () => {
   });
 
   app.listen(port, () => {
-    console.log(chalk.gray(`Generation Service running on port ${port}`))
+    console.log(chalk.gray(`Generation Service running on port ${port}`));
   });
 };

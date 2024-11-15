@@ -83,7 +83,9 @@ class HandleDataWrapper {
                             const properties = sourceFile.getDescendantsOfKind(SyntaxKind.PropertyAssignment);
                             let success = false;
                             if (method) {
-                                method.setReturnType(`Promise<{ data: ${formattedName} }>`);
+                                method.setReturnType(this.config.fetchType === 'axios'
+                                    ? `Promise<{ data: ${formattedName} >>`
+                                    : `Promise<${formattedName}>`);
                                 success = true;
                             }
                             else {
@@ -94,7 +96,9 @@ class HandleDataWrapper {
                                         if (id.getText() === typeName) {
                                             const arrowFunc = prop.getFirstDescendantByKind(SyntaxKind.ArrowFunction);
                                             if (arrowFunc) {
-                                                arrowFunc.setReturnType(`Promise<{ data: ${formattedName} }>`);
+                                                arrowFunc.setReturnType(this.config.fetchType === 'axios'
+                                                    ? `Promise<${formattedName}>`
+                                                    : `Promise<{ data: ${formattedName} }>`);
                                                 success = true;
                                             }
                                         }
