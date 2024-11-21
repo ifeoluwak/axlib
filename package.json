@@ -1,7 +1,7 @@
 {
   "version": "0.1.0",
   "license": "MIT",
-  "typings": "dist/wrapper.d.ts",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "prepare": "tsc"
@@ -14,13 +14,11 @@
   },
   "name": "axlib",
   "author": "Ifeoluwa King <ifeoluwaking24@gmail.com>",
+  "main": "dist/index.js",
   "module": "dist/index.js",
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
-    }
+    ".": "./dist/index.js"
   },
   "devDependencies": {
     "@types/node": "^22.9.0",
