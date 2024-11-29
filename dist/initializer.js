@@ -84,7 +84,7 @@ class HandleDataWrapper {
                             let success = false;
                             if (method) {
                                 method.setReturnType(this.config.fetchType === 'axios'
-                                    ? `Promise<{ data: ${formattedName} }>>`
+                                    ? `Promise<{ data: ${formattedName} }>`
                                     : `Promise<${formattedName}>`);
                                 success = true;
                             }
@@ -97,7 +97,7 @@ class HandleDataWrapper {
                                             const arrowFunc = prop.getFirstDescendantByKind(SyntaxKind.ArrowFunction);
                                             if (arrowFunc) {
                                                 arrowFunc.setReturnType(this.config.fetchType === 'axios'
-                                                    ? `Promise<{ data: ${formattedName} }>>`
+                                                    ? `Promise<{ data: ${formattedName} }>`
                                                     : `Promise<${formattedName}>`);
                                                 success = true;
                                             }
