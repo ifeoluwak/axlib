@@ -16,12 +16,16 @@ const typedApi = (fn) => {
         let data;
         try {
             const bodys = await fn(...args);
+            console.log('bodys 0000000', bodys);
             if (bodys) {
+                console.log('bodys 11111', bodys);
                 if (bodys instanceof Promise) {
+                    console.log('bodys 22222', bodys);
                     // @ts-ignore
                     data = await bodys?.json();
                 }
                 else {
+                    console.log('bodys 33333', bodys);
                     // @ts-ignore
                     data = bodys?.data || bodys;
                 }
@@ -41,6 +45,7 @@ const typedApi = (fn) => {
             return data;
         }
         catch (error) {
+            console.log('error 0000000', error);
             return error;
         }
     };
