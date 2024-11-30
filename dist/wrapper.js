@@ -15,18 +15,23 @@ const typedApi = (fn) => {
         const typeName = fn.name;
         let data;
         try {
-            const bodys = await fn(...args);
-            if (bodys) {
-                if (bodys instanceof Promise) {
+            const response = await fn(...args);
+            if (response) {
+                // means this is a fetch request
+                if (response instanceof Promise) {
+                    // fetch request does not throw error on 404, so we need to handle it
+                    if (!response.ok) {
+                        throw new Error(response);
+                    }
                     // @ts-ignore
-                    data = await bodys?.json();
+                    data = await response?.json();
                 }
                 else {
                     // @ts-ignore
-                    data = bodys?.data || bodys;
+                    data = response?.data || response;
                 }
                 setTimeout(() => {
-                    fetch(`http://localhost:4000/`, {
+                    fetch(`http://localhost:4141/`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
