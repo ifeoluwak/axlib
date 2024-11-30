@@ -48,6 +48,14 @@ class HandleDataWrapper {
       tsConfigFilePath: 'tsconfig.json',
     });
     this.config = getConfig();
+    if (!this.config.typePath || !this.config.apiPath || !this.config.fetchType) {
+      console.log(
+        chalk.red(
+          'Please make sure you have a valid typePath, apiPath and fetchType in your package.json'
+        )
+      );
+      process.exit(1);
+    }
     console.log(chalk.green('Type Generation Service Started'));
   }
 
@@ -169,7 +177,7 @@ class HandleDataWrapper {
 
 export const initialise = async () => {
   const app = express();
-  const port = 4000;
+  const port = 4141;
   const handler = new HandleDataWrapper();
 
   const throttled = throttle((d, t) => handler.handleData(d, t), 1500);
