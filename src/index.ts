@@ -23,36 +23,38 @@ const typedApi = <T>(fn: FunctionType<T>) => {
     let data;
 
     try {
-      const bodys = await fn(...args);
-      console.log('bodys 0000000', bodys);
-      if (bodys) {
-        console.log('bodys 11111', bodys);
-        if (bodys instanceof Promise) {
-          console.log('bodys 22222', bodys);
-            // @ts-ignore
-            data = await bodys?.json();
-        } else {
-          console.log('bodys 33333', bodys);
-            // @ts-ignore
-            data = bodys?.data || bodys;
-        }
-        setTimeout(() => {
-            fetch(`http://localhost:4000/`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                type: typeName,
-                data: data,
-              }),
-            })
+      const response = await fn(...args);
+      if (response) {
+          // means this is a fetch request
+          if (response instanceof Promise) {
+              // fetch request does not throw error on 404, so we need to handle it
+              // @ts-ignore
+              if (!response.ok) {
+                // @ts-ignore
+                  throw new Error(response);
+              }
+              // @ts-ignore
+              data = await response?.json();
+          }
+          else {
+              // @ts-ignore
+              data = response?.data || response;
+          }
+          setTimeout(() => {
+              fetch(`http://localhost:4141/`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                      type: typeName,
+                      data: data,
+                  }),
+              });
           }, 1000);
-        
       }
       return data;
-    } catch (error) {
-      console.log('error 0000000', error);
+  } catch (error) {
       return error;
     }
   };
